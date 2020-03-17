@@ -17,7 +17,7 @@
       <module name="hami_core" target="1.8" />
       <module name="hami_file" target="1.7" />
       <module name="hami_parents" target="1.8" />
-      <module name="hami_protal" target="1.7" />
+      <module name="hami_protal" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

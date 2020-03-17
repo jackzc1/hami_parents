@@ -5,9 +5,6 @@
     <file type="web" url="file://$PROJECT_DIR$/hami_file" />
     <file type="web" url="file://$PROJECT_DIR$/hami_protal" />
   </component>
-  <component name="JUnitGeneratorProjectSettings">
-    <option name="outputFilePattern" value="${SOURCEPATH}/../test/${PACKAGE}/${FILENAME}" />
-  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
