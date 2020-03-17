@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="hami_protal:war">
+    <output-path>$PROJECT_DIR$/hami_protal/target</output-path>
+    <root id="archive" name="hami_protal.war">
+      <element id="artifact" artifact-name="hami_protal:war exploded" />
+    </root>
+  </artifact>
+</component>
