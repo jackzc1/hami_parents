@@ -30,4 +30,13 @@ public class Mtype {
     public void setTdesc(String tdesc) {
         this.tdesc = tdesc == null ? null : tdesc.trim();
     }
+
+    @Override
+    public String toString() {
+        return "Mtype{" +
+                "tid=" + tid +
+                ", tname='" + tname + '\'' +
+                ", tdesc='" + tdesc + '\'' +
+                '}';
+    }
 }

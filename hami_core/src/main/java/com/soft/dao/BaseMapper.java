@@ -4,7 +4,7 @@ import com.soft.model.Mtype;
 
 import java.util.List;
 
-public interface BaseMapper<T> {
+public interface BaseMapper<Q, T> {
 
     int deleteByPrimaryKey(Integer tid);
 
@@ -15,4 +15,8 @@ public interface BaseMapper<T> {
     int updateByPrimaryKey(T record);
 
     List<T> selectAll();
+
+    List<T> selectByCondition(Q q);
+
+    Integer selectByConditionConut(Q q);
 }

@@ -2,12 +2,13 @@ package com.soft.service.impl;
 
 import com.soft.dao.MtypeMapper;
 import com.soft.model.Mtype;
+import com.soft.query.MtypeQuery;
 import com.soft.service.MtypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MtypeServiceImpl extends BaseServiceImpl<Mtype> implements MtypeService {
+public class MtypeServiceImpl extends BaseServiceImpl<MtypeQuery, Mtype> implements MtypeService {
 
     private MtypeMapper mtypeMapper;
 

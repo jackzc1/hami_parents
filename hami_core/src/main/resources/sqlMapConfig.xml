@@ -4,5 +4,6 @@
 <configuration>
     <mappers>
         <mapper resource="mapper/MtypeMapper.xml"/>
+        <mapper resource="mapper/SongerMapper.xml"/>
     </mappers>
 </configuration>

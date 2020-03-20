@@ -1,11 +1,14 @@
 package com.soft.service;
 
 import com.soft.model.Mtype;
+import com.soft.query.MtypeQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -15,6 +18,17 @@ public class MtypeServiceTest {
 
     @Autowired
     private MtypeService mtypeService;
+
+
+    @Test
+    public void selectByCondition() {
+        MtypeQuery mtypeQuery = new MtypeQuery();
+        mtypeQuery.setTname("摇");
+        List<Mtype> mtypes = mtypeService.selectByCondition(mtypeQuery);
+        for (Mtype mtype : mtypes) {
+            System.out.println(mtype);
+        }
+    }
 
     @Test
     public void deleteByPrimaryKey() {
