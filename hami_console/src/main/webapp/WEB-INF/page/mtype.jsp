@@ -1,5 +1,6 @@
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ include file="header.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>tx 音乐是生活的调味剂</title>
@@ -10,6 +11,11 @@
     <link href="../../css/font-awesome.css" rel="stylesheet" media="screen" />
     <link href="../../style/style.css" rel="stylesheet" />
     <link href="../../style/dashboard.css" rel="stylesheet" />
+    <style>
+        #fanye .disabled{
+            pointer-events:none;
+        }
+    </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -40,8 +46,147 @@
             /*$("#addSong").click(function () {
                 window.location.href = "addSong.html";
             });*/
-        })
 
+            var pageNo = parseInt($("#pageNo").val());
+            var totalPage = parseInt($("#totalPage").val());
+
+            if (pageNo == 1 && pageNo == totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            if (pageNo == 1 && pageNo < totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo < totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo == totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            $("#pre a").click(function () {
+                pageNo = pageNo - 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#next a").click(function () {
+                pageNo = pageNo + 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#toNum a").click(function () {
+                var val = $(this).text();
+                $("#pageNo").val(val)
+                $("#mtFrom").submit();
+            })
+
+
+            var pop;
+            $("#addSong").click(function () {
+                pop = layer.open({
+                    type: 1,
+                    content: $('#mtypePop')
+                });
+            })
+
+            layui.use('form', function () {
+                var form = layui.form;
+                form.on('submit(demo1)', function(data){
+                    $.ajax({
+                        url: "/mtype/addMtype",
+                        data: data.field,
+                        dataType: "text",
+                        type: "POST",
+                        success: function (d) {
+                            if (d == "success") {
+                                layer.msg("添加成功")
+                                layer.close(pop)
+                            }
+                        }
+                    })
+                    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                });
+            })
+
+            var pop1;
+            $("[modify]").click(function () {
+                var tid = parseInt($(this).attr("tid"));
+
+                $.ajax({
+                    url: "/mtype/toUpdate",
+                    data: {tid: tid},
+                    dataType: "json",
+                    type: "POST",
+                    success: function (jsonObject) {
+                        $("#tid").val(jsonObject.tid)
+                        $("#ptname").val(jsonObject.tname)
+                        $("#ptdesc").val(jsonObject.tdesc)
+                    }
+                })
+
+                pop1 = layer.open({
+                    type: 1,
+                    content: $('#mtypePop1')
+                });
+            })
+
+            layui.use('form', function () {
+                var form = layui.form;
+                form.on('submit(demo2)', function(data){
+                    $.ajax({
+                        url: "/mtype/updateMtype",
+                        data: data.field,
+                        dataType: "text",
+                        type: "POST",
+                        success: function (d) {
+                            if (d == "success") {
+                                layer.msg("修改成功")
+                                layer.close(pop1)
+                                $("#mtFrom").submit();
+                            }
+                        }
+                    })
+                    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                });
+            })
+
+
+            $(".btn-warning").click(function () {
+                var tid = parseInt($(this).attr("tid"));
+
+                layer.confirm('是否确定删除?', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        url: "/mtype/deleteMtype",
+                        data: {tid: tid},
+                        type: "POST",
+                        dataType: "text",
+                        success: function (obj) {
+                            if (obj == "success") {
+                                layer.msg("删除成功")
+                                $("#mtFrom").submit();
+                                layer.close(index);
+                            }
+                        }
+                    })
+
+                });
+
+            })
+
+            $("#search").click(function () {
+                $("#pageNo").val(1)
+                $("#mtFrom").submit();
+            });
+
+
+
+        })
 
 
     </script>
@@ -130,7 +275,7 @@
             </div>
 
 
-            <form id="mtFrom" action="/type/list" method="post" class="form-horizontal" >
+            <form id="mtFrom" action="/mtype/list" method="post" class="form-horizontal" >
             <div class="row">
                 <div class="col-lg-12">
                     <div class="widget">
@@ -144,7 +289,7 @@
                                     <label for="tname" class="control-label">流派</label>
                                     <div class="controls form-group">
                                         <div class="input-group"> <span class="input-group-addon"><i class="icon-music"></i></span>
-                                            <input type="text" placeholder="如：摇滚" name="tname" id="tname" class="form-control" />
+                                            <input type="text" value="${tname}" placeholder="如：摇滚" name="tname" id="tname" class="form-control" />
 
                                         </div>
                                     </div>
@@ -167,47 +312,25 @@
                                     <tr>
                                         <th class="hidden-xs-portrait">序号</th>
 
-                                        <th class="hidden-xs">专辑</th>
                                         <th class="hidden-xs">流派</th>
+                                        <th class="hidden-xs">描述</th>
                                         <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td class="hidden-xs-portrait">摇滚</td>
-                                        <td class="hidden-xs"> 描述 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td class="hidden-xs-portrait">摇滚</td>
-                                        <td class="hidden-xs"> 描述 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td class="hidden-xs-portrait">摇滚</td>
-                                        <td class="hidden-xs"> 描述 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
+                                    <c:forEach var="mtype" items="${page.list}" varStatus="status">
+                                        <tr>
+                                            <td class="hidden-xs-portrait">${status.count}</td>
+                                            <td class="hidden-xs-portrait">${mtype.tname}</td>
+                                            <td class="hidden-xs"> ${mtype.tdesc} </td>
+                                            <td><button type="button" modify class="btn btn-sm btn-primary" tid="${mtype.tid}"> 修改 </button>
+                                                <button data-toggle="button" tid="${mtype.tid}" class="btn btn-sm btn-warning"> 删除 </button></td>
+                                        </tr>
+                                    </c:forEach>
 
                                     </tbody>
                                 </table>
-                                <div class="clearfix text-right">
-                                    <ul class="pagination no-margin">
-                                        <li class="disabled"><a href="#">Prev</a></li>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>
-                                </div>
+                                <jsp:include page="pagination.jsp"></jsp:include>
                             </div>
                         </div>
                     </div>
@@ -231,7 +354,7 @@
 </html>
 
 <div id="mtypePop" style="margin-right: 50px;margin-top: 50px; display: none">
-    <form id="addMtypeForm" class="layui-form" method="post" action="/type/addMtype" lay-filter="example">
+    <form id="addMtypeForm" class="layui-form" method="post" action="/mtype/addMtype" lay-filter="example">
         <div class="layui-form-item" >
             <label class="layui-form-label">输入框</label>
             <div class="layui-input-block">

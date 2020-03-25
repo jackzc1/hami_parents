@@ -1,6 +1,6 @@
-﻿<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="header.jsp"%>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ include file="header.jsp"%>
 <html>
 <head>
     <title>tx 音乐是生活的调味剂</title>
@@ -8,7 +8,7 @@
 
     <script>
 
-        var layer；
+        var layer;
 
         $(function () {
             layui.use('layer', function(){
@@ -65,7 +65,49 @@
 
             });
 
+            var pageNo = parseInt($("#pageNo").val());
+            var totalPage = parseInt($("#totalPage").val());
 
+            if (pageNo == 1 && pageNo == totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            if (pageNo == 1 && pageNo < totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo < totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo == totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            $("#pre a").click(function () {
+                pageNo = pageNo - 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#next a").click(function () {
+                pageNo = pageNo + 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#toNum a").click(function () {
+                var val = $(this).text();
+                $("#pageNo").val(val)
+                $("#mtFrom").submit();
+            })
+
+            $("#search").click(function () {
+                $("#pageNo").val(1)
+                $("#mtFrom").submit()
+            })
         })
 
 
@@ -144,7 +186,7 @@
         </form>
     </div>
 </div>
-<form id="albumForm" action="/album/list" method="post" class="form-horizontal" >
+<form id="mtFrom" action="/album/list" method="post" class="form-horizontal" >
 <div class="wrapper">
 
     <jsp:include page="menu.jsp"></jsp:include>
@@ -195,7 +237,7 @@
                                 </div>
 
                                 <div class="control-group">
-                                    <label for="searchPdate" class="control-label">语种</label>
+                                    <label for="searchPdate" class="control-label">发行时间</label>
                                     <div class="controls form-group">
                                         <div class="input-group"> <span class="input-group-addon"><i class="icon-reorder"></i></span>
                                             <input readonly id="searchPdate" value="<f:formatDate value="${mq.pdate}" pattern="yyyy-MM-dd"></f:formatDate>" type="text" placeholder="如：1970-01-01" name="pdate"  class="form-control" />
@@ -243,68 +285,22 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> Thriller </td>
-                                        <td class="hidden-xs-portrait">史诗唱片公司</td>
-                                        <td class="hidden-xs"> <p><strong>1982-11-30</strong></p> </td>
-                                        <td class="hidden-xs"> 英语 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> Thriller </td>
-                                        <td class="hidden-xs-portrait">史诗唱片公司</td>
-                                        <td class="hidden-xs"> <p><strong>1982-11-30</strong></p> </td>
-                                        <td class="hidden-xs"> 英语 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> Thriller </td>
-                                        <td class="hidden-xs-portrait">史诗唱片公司</td>
-                                        <td class="hidden-xs"> <p><strong>1982-11-30</strong></p> </td>
-                                        <td class="hidden-xs"> 英语 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> Thriller </td>
-                                        <td class="hidden-xs-portrait">史诗唱片公司</td>
-                                        <td class="hidden-xs"> <p><strong>1982-11-30</strong></p> </td>
-                                        <td class="hidden-xs"> 英语 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> Thriller </td>
-                                        <td class="hidden-xs-portrait">史诗唱片公司</td>
-                                        <td class="hidden-xs"> <p><strong>1982-11-30</strong></p> </td>
-                                        <td class="hidden-xs"> 英语 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
+                                    <c:forEach var="album" items="${page.list}" varStatus="status">
+                                        <tr>
+                                            <td class="hidden-xs-portrait">${status.count}</td>
+                                            <td><img src="../../images/1.jpg" /></td>
+                                            <td> ${album.aname} </td>
+                                            <td class="hidden-xs-portrait">${album.company}</td>
+                                            <td class="hidden-xs"> <p><strong><f:formatDate value="${album.pdate}" pattern="yyyy-MM-dd"></f:formatDate></strong></p> </td>
+                                            <td class="hidden-xs"> ${album.lang} </td>
+                                            <td><button class="btn btn-sm btn-primary"> 修改 </button>
+                                                <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
+                                        </tr>
+                                    </c:forEach>
+
                                     </tbody>
                                 </table>
-                                <div class="clearfix text-right">
-                                    <ul class="pagination no-margin">
-                                        <li class="disabled"><a href="#">Prev</a></li>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>
-                                </div>
+                                <jsp:include page="pagination.jsp"></jsp:include>
                             </div>
                         </div>
                     </div>

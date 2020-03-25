@@ -69,6 +69,11 @@
     where TID = #{tid,jdbcType=INTEGER}
   </update>
 
+  <select id="selectAll" parameterType="com.soft.model.Mtype" resultMap="BaseResultMap">
+    select * from mtype
+  </select>
+
+
   <select id="selectByCondition" parameterType="com.soft.query.MtypeQuery" resultMap="BaseResultMap">
     select * from mtype
     <where>
@@ -79,14 +84,13 @@
      limit #{startNum}, #{pageSize}
   </select>
 
-  <select id="selectByConditionConut" parameterType="com.soft.query.MtypeQuery" resultMap="BaseResultMap">
+  <select id="selectByConditionConut" parameterType="com.soft.query.MtypeQuery" resultType="int">
     select count(*) from mtype
     <where>
       <if test="tname != null and tname != ''">
         tname like '%${tname}%'
       </if>
     </where>
-     limit #{startNum}, #{pageSize}
   </select>
 
 </mapper>

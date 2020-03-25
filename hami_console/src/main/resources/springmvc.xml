@@ -18,7 +18,23 @@
         <property name="suffix" value=".jsp"></property>
     </bean>
 
-    <mvc:default-servlet-handler></mvc:default-servlet-handler>
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>
+                <property name="features">
+                    <array>
+                        <value>WriteMapNullValue</value>
+                        <value>WriteNullStringAsEmpty</value>
+                    </array>
+
+                </property>
+                <property name="dateFormat" value="yyyy-MM-dd"></property>
+            </bean>
+        </mvc:message-converters>
+
+    </mvc:annotation-driven>
+    <mvc:default-servlet-handler/>
 
     <mvc:view-controller path="/index" view-name="index"></mvc:view-controller>
 

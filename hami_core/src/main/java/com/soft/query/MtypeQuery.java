@@ -5,7 +5,7 @@ import com.soft.model.Mtype;
 public class MtypeQuery extends Mtype {
 
     private Integer startNum = 0;
-    private Integer pageNo = 1;
+    private Integer pageNo;
     private Integer pageSize = 5;
 
     public Integer getPageNo() {
@@ -23,6 +23,14 @@ public class MtypeQuery extends Mtype {
         this.pageSize = pageSize;
     }
 
+    @Override
+    public String toString() {
+        return "MtypeQuery{" +
+                "startNum=" + startNum +
+                ", pageNo=" + pageNo +
+                ", pageSize=" + pageSize +
+                '}';
+    }
 
     public Integer getStartNum() {
         return startNum;

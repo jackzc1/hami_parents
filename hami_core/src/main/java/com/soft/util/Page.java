@@ -41,11 +41,23 @@ public class Page<T> {
         this.totalCount = totalCount;
     }
 
+    @Override
+    public String toString() {
+        return "Page{" +
+                "pageSize=" + pageSize +
+                ", pageNo=" + pageNo +
+                ", totalCount=" + totalCount +
+                ", totalPage=" + totalPage +
+                ", startNum=" + startNum +
+                ", list=" + list +
+                '}';
+    }
+
     public Integer getTotalPage() {
-        totalPage = totalCount/pageSize;
+        /*totalPage = totalCount/pageSize;
         if (totalPage == 0 || totalCount%pageSize != 0) {
             totalPage++;
-        }
+        }*/
         return totalPage;
     }
 

@@ -53,16 +53,24 @@ public class BaseServiceImpl<Q,T> implements BaseService<Q, T> {
         try {
             //获取pageSize和pageNo来设置startNum
             Method getPageNo = qClass.getDeclaredMethod("getPageNo", null);
+            Method setStartNum = qClass.getDeclaredMethod("setStartNum", new Class[]{Integer.class});
             Method getPageSize = qClass.getDeclaredMethod("getPageSize", null);
             Integer pageNo = (Integer) getPageNo.invoke(q, null);
             Integer pageSize = (Integer) getPageSize.invoke(q, null);
-            Method setStartNum = qClass.getDeclaredMethod("setStartNum", new Class[]{Integer.class});
-            setStartNum.invoke(qClass, (pageNo - 1) * pageSize);
-            //设置分页对象属性
-            page.setStartNum((pageNo - 1) * pageSize);
-            page.setList(baseMapper.selectByCondition(q));
-            page.setTotalCount(baseMapper.selectByConditionConut(q));
+            int startNum = (pageNo - 1) * pageSize;
+            setStartNum.invoke(q, startNum);
             page.setPageNo(pageNo);
+            //设置分页对象属性
+            page.setStartNum(startNum);
+            page.setList(baseMapper.selectByCondition(q));
+            int totalCount = baseMapper.selectByConditionConut(q);
+            page.setTotalCount(totalCount);
+            int totalPage = totalCount/pageSize;
+            if (totalPage == 0 || totalCount%pageSize != 0) {
+                totalPage++;
+            }
+            page.setTotalPage(totalPage);
+            System.out.println(totalPage);
         } catch (Exception e) {
             e.printStackTrace();
         }
