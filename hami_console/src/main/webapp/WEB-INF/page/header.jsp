@@ -21,8 +21,7 @@
     <script src="/js/jquery.form.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-datetimepicker.js"></script>
-
-
+    <c:set var="path" value="http://localhost:8088"></c:set>
 </head>
 <body>
 

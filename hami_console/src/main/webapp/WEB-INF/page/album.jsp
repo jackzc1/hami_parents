@@ -59,6 +59,7 @@
                                 $('#location').val("")
                                 $("#lastImage").val("")
                                 $("#albumImg").attr("src", "../../img/gallery-photo/thumb-3.jpg")
+                                $('#albumPop').css("display", "none")
                             }
                         })
                     }
@@ -128,7 +129,6 @@
             layui.use('form', function (d) {
                 var form = layui.form;
                 form.on("submit(demo1)", function(data){
-                    alert(data.field)
                     $.ajax({
                         url: "/album/addAlbum",
                         data: data.field,
@@ -138,10 +138,150 @@
                             if (d == "success") {
                                 layer.msg("添加成功")
                                 layer.close(pop)
+                                $('#albumPop').css("display", "none")
                             }
                         }
                     })
                     return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                });
+
+                form.verify({
+                    aname: function(value, item){ //value：表单的值、item：表单的DOM对象
+                        if(!new RegExp("^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$").test(value)){
+                            return '必须是中英文或数字字符，长度1-20';
+                        }
+                        var flag = "false"
+                        $.ajax({
+                            url:"/album/isSame",
+                            dataType:"text",
+                            type:"post",
+                            async:false,
+                            data:{"aname":value},
+                            success:function (respText) {
+                                flag = respText;
+
+                            }
+
+                        })
+                        if(flag == "true"){
+                            return '专辑名已经存在';
+                        }
+                    },
+
+                    //我们既支持上述函数式的方式，也支持下述数组的形式
+                    //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+                    company: [/^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,'必须是中英文或数字字符，长度1-20'],
+                    pdate: [/^.+$/,'必须输入时间,例如1994-01-01'],
+                    pic: [/^.+$/,'亲不要忘记上传专辑封面喔'],
+                    lang: [/^[\u4e00-\u9fa5]{1,10}$/,'请输入中文的语种']
+
+
+                });
+
+        })
+
+            //删除
+            $(".btn-warning").click(function () {
+                var aid = parseInt($(this).attr("aid"));
+
+                layer.confirm('是否确定删除?', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        url: "/album/deleteAlbum",
+                        data: {aid: aid},
+                        type: "POST",
+                        dataType: "text",
+                        success: function (obj) {
+                            if (obj == "success") {
+                                layer.msg("删除成功")
+                                $("#mtFrom").submit();
+                                layer.close(index);
+                            }
+                        }
+                    })
+
+                });
+
+            })
+
+            //修改
+            var pop1;
+            $("[modify]").click(function () {
+                var aid = parseInt($(this).attr("aid"));
+
+                $.ajax({
+                    url: "/album/toUpdate",
+                    data: {aid: aid},
+                    dataType: "json",
+                    type: "POST",
+                    success: function (jsonObject) {
+                        var path = "http://localhost:8088/" + jsonObject.pic;
+                        $("#aid2").val(jsonObject.aid)
+                        $("#aname2").val(jsonObject.aname)
+                        $("#company2").val(jsonObject.company)
+                        $("#pdate2").val(jsonObject.pdate)
+                        $("#lang2").val(jsonObject.lang)
+                        $("#albumImg2").attr("src", path)
+                        $("#pic2").val(jsonObject.pic)
+
+                    }
+                })
+
+                pop1 = layer.open({
+                    type: 1,
+                    content: $('#albumPop2'),
+                    cancel: function(index, layero){
+                        $("#addMtypeForm").ajaxSubmit({
+                            url: "/upload/deletePic",
+                            data: {
+                                type: "pic"
+                            },
+                            dataType: "json",
+                            success: function (json) {
+                                $('#location2').val("")
+                                $("#lastImage2").val("")
+                                $("#albumImg2").attr("src", "../../img/gallery-photo/thumb-3.jpg")
+                                $('#albumPop2').css("display", "none")
+                            }
+                        })
+                    }
+                });
+                return false;
+            })
+
+            layui.use('form', function () {
+                var form = layui.form;
+                form.on('submit(demo2)', function(data){
+                    $.ajax({
+                        url: "/album/updateAlbum",
+                        data: data.field,
+                        dataType: "text",
+                        type: "POST",
+                        success: function (d) {
+                            if (d == "success") {
+                                layer.msg("修改成功")
+                                layer.close(pop1)
+                                $("#mtFrom").submit();
+                                $('#albumPop2').css("display", "none")
+                            }
+                        }
+                    })
+                    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                });
+                form.verify({
+                    aname2: function(value, item){ //value：表单的值、item：表单的DOM对象
+                        if(!new RegExp("^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$").test(value)){
+                            return '必须是中英文或数字字符，长度1-20';
+                        }
+                    },
+
+                    //我们既支持上述函数式的方式，也支持下述数组的形式
+                    //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+                    company2: [/^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,'必须是中英文或数字字符，长度1-20'],
+                    pdate2: [/^.+$/,'必须输入时间,例如1994-01-01'],
+                    pic2: [/^.+$/,'亲不要忘记上传专辑封面喔'],
+                    lang2: [/^[\u4e00-\u9fa5]{1,10}$/,'请输入中文的语种']
+
+
                 });
             })
 
@@ -168,6 +308,22 @@
             })
         }
 
+        function submitFile2() {
+
+            $('#location2').val($('#i-file2').val())
+            $("#addMtypeForm2").ajaxSubmit({
+                url: "/upload/uploadFile",
+                data: {
+                    type: "pic"
+                },
+                dataType: "json",
+                success: function (json) {
+                    $("#albumImg2").attr("src", json.realPath)
+                    $("#lastImage2").val(json.realPath)
+                    $("#pic2").val(json.relativePath)
+                }
+            })
+        }
 
     </script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
@@ -345,13 +501,13 @@
                                     <c:forEach var="album" items="${page.list}" varStatus="status">
                                         <tr>
                                             <td class="hidden-xs-portrait">${status.count}</td>
-                                            <td><img src="../../images/1.jpg" /></td>
+                                            <td><img src="${path}${album.pic}" /></td>
                                             <td> ${album.aname} </td>
                                             <td class="hidden-xs-portrait">${album.company}</td>
                                             <td class="hidden-xs"> <p><strong><f:formatDate value="${album.pdate}" pattern="yyyy-MM-dd"></f:formatDate></strong></p> </td>
                                             <td class="hidden-xs"> ${album.lang} </td>
-                                            <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                                <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
+                                            <td><button class="btn btn-sm btn-primary" modify aid="${album.aid}"> 修改 </button>
+                                                <button data-toggle="button" aid="${album.aid}" class="btn btn-sm btn-warning"> 删除 </button></td>
                                         </tr>
                                     </c:forEach>
 
@@ -377,7 +533,7 @@
         <div class="layui-form-item" >
             <label class="layui-form-label" style="width:100px">专辑名字</label>
             <div class="layui-input-block">
-                <input  type="text" name="aname" style="color: black; border-color: lightgray;background-color: white"  lay-verify="title" autocomplete="off" placeholder="请输入专辑名" class="layui-input">
+                <input  type="text" name="aname" style="color: black; border-color: lightgray;background-color: white"  lay-verify="aname" autocomplete="off" placeholder="请输入专辑名" class="layui-input">
             </div>
         </div>
 
@@ -385,14 +541,14 @@
         <div class="layui-form-item" >
             <label class="layui-form-label" style="width:100px">发行公司</label>
             <div class="layui-input-block">
-                <input  type="text" name="company" style="color: black; border-color: lightgray;background-color: white"  lay-verify="title" autocomplete="off" placeholder="请输入公司名" class="layui-input">
+                <input  type="text" name="company" style="color: black; border-color: lightgray;background-color: white"  lay-verify="company" autocomplete="off" placeholder="请输入公司名" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item" >
             <label class="layui-form-label" style="width:100px">发行时间</label>
             <div class="layui-input-block">
-                <input  type="text" id="addPdate"  name="pdate" style="color: black; border-color: lightgray;background-color: white"  lay-verify="title" autocomplete="off" placeholder="请输入发行时间" class="layui-input">
+                <input  type="text" id="addPdate"  name="pdate" style="color: black; border-color: lightgray;background-color: white"  lay-verify="pdate" autocomplete="off" placeholder="请输入发行时间" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -419,7 +575,7 @@
                     </div>
                 </div>
                 <input type="hidden" name="lastImage" id="lastImage"/>
-                <input type="hidden" name="pic" id="pic"/>
+                <input type="hidden" name="pic" id="pic" lay-verify="pic"/>
                 <input type="file" name="picFile" id='i-file'  accept=".jpg, .png" onchange="submitFile()" style="border-color: lightgray;background-color: lightgray;display: none">
             </div>
         </div>
@@ -427,7 +583,7 @@
         <div class="layui-form-item" >
             <label for="lang1" class="layui-form-label " style="width:100px">语种</label>
             <div class="layui-input-block">
-                <input id="lang1"  type="text" name="lang" style="color: black; border-color: lightgray;background-color: white"  lay-verify="title" autocomplete="off" placeholder="请输入语种" class="layui-input">
+                <input id="lang1"  type="text" name="lang" style="color: black; border-color: lightgray;background-color: white"  lay-verify="lang" autocomplete="off" placeholder="请输入语种" class="layui-input">
             </div>
         </div>
 
@@ -439,6 +595,74 @@
     </form>
 </div>
 
+<%--修改弹出层--%>
+<div id="albumPop2" style="margin-right: 50px;margin-top: 50px; display: none">
+    <form id="addMtypeForm2" class="layui-form" method="post" lay-filter="example">
+        <input type="hidden" id="aid2" name="aid"/>
+        <div class="layui-form-item" >
+            <label class="layui-form-label" style="width:100px">专辑名字</label>
+            <div class="layui-input-block">
+                <input  type="text" id="aname2" name="aname" style="color: black; border-color: lightgray;background-color: white"  lay-verify="aname2" autocomplete="off" placeholder="请输入专辑名" class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label" style="width:100px">发行公司</label>
+            <div class="layui-input-block">
+                <input  type="text" id="company2" name="company" style="color: black; border-color: lightgray;background-color: white"  lay-verify="company2" autocomplete="off" placeholder="请输入公司名" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item" >
+            <label class="layui-form-label" style="width:100px">发行时间</label>
+            <div class="layui-input-block">
+                <input  type="text" id="pdate2"  name="pdate" style="color: black; border-color: lightgray;background-color: white"  lay-verify="pdate2" autocomplete="off" placeholder="请输入发行时间" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label  class="layui-form-label" style="width:100px">图片</label>
+            <div class="controls form-group">
+                <div class="col-sm-4 col-md-2">
+                    <div class="image-row">
+                        <div class="image-set"> <a class="example-image-link" href="../../img/gallery-photo/image-3.jpg" data-lightbox="example-set" title="Click on the right side of the image to move forward.">
+                            <img id="albumImg2" class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" /></a> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="i-file" class="layui-form-label" style="width:100px">选择文件</label>
+            <!--<div class="col-sm-4 control-label">选择文件</div>-->
+            <div id="examples2" class="section examples-section">
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <input id='location2' class="form-control" onclick="$('#i-file2').click();">
+                        <label class="input-group-btn">
+                            <input  type="button" id="i-check2" value="选择封面" class="btn btn-primary" onclick="$('#i-file2').click();">
+                        </label>
+                    </div>
+                </div>
+                <input type="hidden" name="lastImage" id="lastImage2"/>
+                <input type="hidden" name="pic" id="pic2" lay-verify="pic2"/>
+                <input type="file" name="picFile" id='i-file2'  accept=".jpg, .png" onchange="submitFile2()" style="border-color: lightgray;background-color: lightgray;display: none">
+            </div>
+        </div>
+
+        <div class="layui-form-item" >
+            <label for="lang1" class="layui-form-label " style="width:100px">语种</label>
+            <div class="layui-input-block">
+                <input id="lang2"  type="text" name="lang" style="color: black; border-color: lightgray;background-color: white"  lay-verify="lang" autocomplete="off" placeholder="请输入语种" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal layui-btn-radius" lay-submit="" lay-filter="demo2">修改专辑</button>
+            </div>
+        </div>
+    </form>
+</div>
 </body>
 </html>
 

@@ -92,7 +92,10 @@
             $("#addSong").click(function () {
                 pop = layer.open({
                     type: 1,
-                    content: $('#mtypePop')
+                    content: $('#mtypePop'),
+                    cancel: function(index, layero){
+                        $('#mtypePop').css("display", "none")
+                    }
                 });
             })
 
@@ -108,6 +111,7 @@
                             if (d == "success") {
                                 layer.msg("添加成功")
                                 layer.close(pop)
+                                $('#mtypePop').css("display", "none")
                             }
                         }
                     })
@@ -133,7 +137,10 @@
 
                 pop1 = layer.open({
                     type: 1,
-                    content: $('#mtypePop1')
+                    content: $('#mtypePop1'),
+                    cancel: function(index, layero){
+                        $('#mtypePop1').css("display", "none")
+                    }
                 });
             })
 
@@ -150,6 +157,7 @@
                                 layer.msg("修改成功")
                                 layer.close(pop1)
                                 $("#mtFrom").submit();
+                                $('#mtypePop1').css("display", "none")
                             }
                         }
                     })
