@@ -24,6 +24,7 @@
     <![endif]-->
     <script src="../../js/jquery.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
+    <script src="/js/layui/layui.all.js" charset="utf-8"></script>
     <!--<script type="text/javascript" src="js/smooth-sliding-menu.js"></script>-->
     <script>
 

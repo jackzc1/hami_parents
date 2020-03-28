@@ -5,7 +5,12 @@
 <head>
     <title>tx 音乐是生活的调味剂</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <style>
+        #fanye .disabled{
+            pointer-events:none;
+        }
+    </style>
+    <script src="/js/layui/layui.all.js" charset="utf-8"></script>
     <script>
 
         var layer;
@@ -29,20 +34,34 @@
 
 
 
-            $("#albumForm").click(function () {
+           /* $("#albumForm").click(function () {
                 $("#pageNo").val(1);
                 $("#mtFrom").submit();
-            });
+            });*/
 
 
 
 
             var pop;
-            $("#addAlbum").click(function () {
+            $("#addAlbums").click(function () {
                 pop = layer.open({
                     type: 1,
                     area:[900, 650],
-                    content: $('#albumPop') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    content: $('#albumPop'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    cancel: function(index, layero){
+                        $("#addMtypeForm").ajaxSubmit({
+                            url: "/upload/deletePic",
+                            data: {
+                                type: "pic"
+                            },
+                            dataType: "json",
+                            success: function (json) {
+                                $('#location').val("")
+                                $("#lastImage").val("")
+                                $("#albumImg").attr("src", "../../img/gallery-photo/thumb-3.jpg")
+                            }
+                        })
+                    }
                 });
 
             })
@@ -104,12 +123,50 @@
                 $("#mtFrom").submit();
             })
 
+
+            //表单数据添加
+            layui.use('form', function (d) {
+                var form = layui.form;
+                form.on("submit(demo1)", function(data){
+                    alert(data.field)
+                    $.ajax({
+                        url: "/album/addAlbum",
+                        data: data.field,
+                        dataType: "text",
+                        type: "POST",
+                        success: function (d) {
+                            if (d == "success") {
+                                layer.msg("添加成功")
+                                layer.close(pop)
+                            }
+                        }
+                    })
+                    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                });
+            })
+
             $("#search").click(function () {
                 $("#pageNo").val(1)
                 $("#mtFrom").submit()
             })
         })
 
+        function submitFile() {
+
+            $('#location').val($('#i-file').val())
+            $("#addMtypeForm").ajaxSubmit({
+                url: "/upload/uploadFile",
+                data: {
+                    type: "pic"
+                },
+                dataType: "json",
+                success: function (json) {
+                    $("#albumImg").attr("src", json.realPath)
+                    $("#lastImage").val(json.realPath)
+                    $("#pic").val(json.relativePath)
+                }
+            })
+        }
 
 
     </script>
@@ -262,7 +319,7 @@
                             <div class="form-actions text-right">
                                 <div>
                                     <button id="search" class="btn btn-primary" type="submit">搜索</button>
-                                    <button id="addAlbum" class="btn btn-primary" type="button" >添加歌曲</button>
+                                    <button id="addAlbums" class="btn btn-primary" type="button" >添加歌曲</button>
                                     <button id="toggleSearch" flag = "2" class="btn btn-default" type="button">收缩↑</button>
                                 </div>
                             </div>
@@ -316,7 +373,7 @@
 <script>$("#album").addClass("current");</script>
 
 <div id="albumPop" style="margin-right: 50px;margin-top: 50px; display: none">
-    <form id="addMtypeForm" class="layui-form" method="post" action="/type/addMtype" lay-filter="example">
+    <form id="addMtypeForm" class="layui-form" method="post" lay-filter="example">
         <div class="layui-form-item" >
             <label class="layui-form-label" style="width:100px">专辑名字</label>
             <div class="layui-input-block">
@@ -343,7 +400,8 @@
             <div class="controls form-group">
                 <div class="col-sm-4 col-md-2">
                     <div class="image-row">
-                        <div class="image-set"> <a class="example-image-link" href="../../img/gallery-photo/image-3.jpg" data-lightbox="example-set" title="Click on the right side of the image to move forward."> <img class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" /></a> </div>
+                        <div class="image-set"> <a class="example-image-link" href="../../img/gallery-photo/image-3.jpg" data-lightbox="example-set" title="Click on the right side of the image to move forward.">
+                            <img id="albumImg" class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" /></a> </div>
                     </div>
                 </div>
             </div>
@@ -360,7 +418,9 @@
                         </label>
                     </div>
                 </div>
-                <input type="file" name="pic" id='i-file'  accept=".jpg, .png" onchange="$('#location').val($('#i-file').val());" style="border-color: lightgray;background-color: lightgray;display: none">
+                <input type="hidden" name="lastImage" id="lastImage"/>
+                <input type="hidden" name="pic" id="pic"/>
+                <input type="file" name="picFile" id='i-file'  accept=".jpg, .png" onchange="submitFile()" style="border-color: lightgray;background-color: lightgray;display: none">
             </div>
         </div>
 

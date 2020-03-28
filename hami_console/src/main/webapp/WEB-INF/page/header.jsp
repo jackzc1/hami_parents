@@ -21,7 +21,7 @@
     <script src="/js/jquery.form.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-datetimepicker.js"></script>
-    <script src="/js/layui/layui.all.js" charset="utf-8"></script>
+
 
 </head>
 <body>
