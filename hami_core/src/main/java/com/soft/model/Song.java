@@ -27,6 +27,58 @@ public class Song {
 
     private String lrc;
 
+    private Mtype mtype;
+
+    private Songer songer;
+
+    private Album album;
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "sid=" + sid +
+                ", tid=" + tid +
+                ", srid=" + srid +
+                ", aid=" + aid +
+                ", sname='" + sname + '\'' +
+                ", pic='" + pic + '\'' +
+                ", mp3='" + mp3 + '\'' +
+                ", isHot=" + isHot +
+                ", isNew=" + isNew +
+                ", ptimes=" + ptimes +
+                ", auditStatus=" + auditStatus +
+                ", showStatus=" + showStatus +
+                ", lrc='" + lrc + '\'' +
+                ", mtype=" + mtype +
+                ", songer=" + songer +
+                ", album=" + album +
+                '}';
+    }
+
+    public Mtype getMtype() {
+        return mtype;
+    }
+
+    public void setMtype(Mtype mtype) {
+        this.mtype = mtype;
+    }
+
+    public Songer getSonger() {
+        return songer;
+    }
+
+    public void setSonger(Songer songer) {
+        this.songer = songer;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
+    }
+
     public Integer getSid() {
         return sid;
     }

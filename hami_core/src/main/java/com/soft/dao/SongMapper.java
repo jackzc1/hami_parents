@@ -1,19 +1,8 @@
 package com.soft.dao;
 
 import com.soft.model.Song;
+import com.soft.query.SongQuery;
 
-public interface SongMapper {
-    int deleteByPrimaryKey(Integer sid);
+public interface SongMapper extends BaseMapper<SongQuery, Song> {
 
-    int insert(Song record);
-
-    int insertSelective(Song record);
-
-    Song selectByPrimaryKey(Integer sid);
-
-    int updateByPrimaryKeySelective(Song record);
-
-    int updateByPrimaryKeyWithBLOBs(Song record);
-
-    int updateByPrimaryKey(Song record);
 }

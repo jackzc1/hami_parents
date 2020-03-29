@@ -6,5 +6,6 @@
         <mapper resource="mapper/MtypeMapper.xml"/>
         <mapper resource="mapper/SongerMapper.xml"/>
         <mapper resource="mapper/AlbumMapper.xml"/>
+        <mapper resource="mapper/SongMapper.xml"/>
     </mappers>
 </configuration>
