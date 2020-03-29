@@ -15,6 +15,17 @@ public class Songer {
 
     private String intro;
 
+    //多对一配置
+    private Mtype mtype;
+
+    public Mtype getMtype() {
+        return mtype;
+    }
+
+    public void setMtype(Mtype mtype) {
+        this.mtype = mtype;
+    }
+
     public Integer getSrid() {
         return srid;
     }
@@ -67,7 +78,22 @@ public class Songer {
         return intro;
     }
 
+    @Override
+    public String toString() {
+        return "Songer{" +
+                "srid=" + srid +
+                ", tid=" + tid +
+                ", srname='" + srname + '\'' +
+                ", area='" + area + '\'' +
+                ", pic='" + pic + '\'' +
+                ", isHot=" + isHot +
+                ", intro='" + intro + '\'' +
+                ", mtype=" + mtype +
+                '}';
+    }
+
     public void setIntro(String intro) {
+
         this.intro = intro == null ? null : intro.trim();
     }
 }

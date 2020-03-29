@@ -4,7 +4,12 @@
 <head>
     <title>tx 音乐是生活的调味剂</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <style>
+        #fanye .disabled{
+            pointer-events:none;
+        }
+    </style>
+    <script src="/js/layui/layui.all.js" charset="utf-8"></script>
     <script>
 
 
@@ -25,6 +30,50 @@
             });
             $("#addSong").click(function () {
                 window.location.href = "addSonger.jsp";
+            });
+
+            var pageNo = parseInt($("#pageNo").val());
+            var totalPage = parseInt($("#totalPage").val());
+
+            if (pageNo == 1 && pageNo == totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            if (pageNo == 1 && pageNo < totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo < totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo == totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            $("#pre a").click(function () {
+                pageNo = pageNo - 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#next a").click(function () {
+                pageNo = pageNo + 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#toNum a").click(function () {
+                var val = $(this).text();
+                $("#pageNo").val(val)
+                $("#mtFrom").submit();
+            })
+
+            $("#search").click(function () {
+                $("#pageNo").val(1)
+                $("#mtFrom").submit();
             });
         })
 
@@ -114,22 +163,22 @@
                     <h2 class="page-title">艺人列表 <small>favor song</small></h2>
                 </div>
             </div>
-
-            <div class="row">
+            <form id="mtFrom" method="post" class="form-horizontal" />
+                <div class="row">
                 <div class="col-lg-12">
                     <div class="widget">
                         <div class="widget-header"> <i class="icon-list-ol"></i>
                             <h3>搜索条件</h3>
                         </div>
                         <div class="widget-content">
-                            <form method="post" class="form-horizontal" />
+
                             <fieldset id="find">
                                 <!--<legend class="section">Horizontal form</legend>-->
                                 <div class="control-group">
                                     <label for="srname" class="control-label">艺人名字</label>
                                     <div class="controls form-group">
                                         <div class="input-group"> <span class="input-group-addon"><i class="icon-music"></i></span>
-                                            <input type="text" placeholder="如：黄家驹" name="srname" id="srname" class="form-control" />
+                                            <input type="text" value="${sq.srname}" placeholder="如：黄家驹" name="srname" id="srname" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
@@ -137,17 +186,18 @@
                                     <label for="area" class="control-label">地区</label>
                                     <div class="controls form-group">
                                         <div class="input-group"> <span class="input-group-addon"><i class="icon-user"></i></span>
-                                            <input type="text" placeholder="如：香港" name="area" id="area" class="form-control" />
+                                            <input type="text" value="${sq.area}" placeholder="如：香港" name="area" id="area" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label for="mtype" class="control-label">流派</label>
-
+                                    <label for="tid" class="control-label">流派</label>
                                     <div class="controls form-group">
-                                        <select id="mtype" name="mtype" class="form-control ">
-                                            <option>流行</option>
-                                            <option>摇滚</option>
+                                        <select id="tid" name="tid" class="form-control ">
+                                            <option value="">-----请选择-----</option>
+                                            <c:forEach var="mtype" items="${mtypes}">
+                                                <option value="${mtype.tid}" <c:if test="${mtype.tid == sq.tid}">selected</c:if>>${mtype.tname}</option>
+                                            </c:forEach>
                                         </select>
 
                                     </div>
@@ -155,13 +205,13 @@
                             </fieldset>
                             <div class="form-actions text-right">
                                 <div>
-                                    <button class="btn btn-primary" type="submit">搜索</button>
+                                    <button id="search" class="btn btn-primary" type="submit">搜索</button>
                                     <button id="addSong" class="btn btn-primary" type="button" >添加艺人</button>
                                     <button id="toggleSearch" flag = "2" class="btn btn-default" type="button">收缩↑</button>
                                 </div>
                             </div>
 
-                            </form>
+
                         </div>
                         <div class="widget-content" >
                             <div class="body">
@@ -178,51 +228,22 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 李玟 </td>
-                                        <td class="hidden-xs-portrait">北京</td>
-                                        <td class="hidden-xs"> <p><strong>热门</strong></p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 李玟 </td>
-                                        <td class="hidden-xs-portrait">北京</td>
-                                        <td class="hidden-xs"> <p><strong>热门</strong></p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 李玟 </td>
-                                        <td class="hidden-xs-portrait">北京</td>
-                                        <td class="hidden-xs"> <p><strong>热门</strong></p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 李玟 </td>
-                                        <td class="hidden-xs-portrait">北京</td>
-                                        <td class="hidden-xs"> <p><strong>热门</strong></p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
+                                    <c:forEach var="songer" items="${page.list}" varStatus="status">
+                                        <tr>
+                                            <td class="hidden-xs-portrait">${status.count}</td>
+                                            <td><img src="../../images/1.jpg" /></td>
+                                            <td> ${songer.srname} </td>
+                                            <td class="hidden-xs-portrait">${songer.area}</td>
+                                            <td class="hidden-xs"> <p><strong>${songer.isHot == 1?'是':'否'}</strong></p></td>
+                                            <td class="hidden-xs"> ${songer.mtype.tname} </td>
+                                            <td><button class="btn btn-sm btn-primary"> 修改 </button>
+                                                <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
+                                        </tr>
+                                    </c:forEach>
 
                                     </tbody>
                                 </table>
-                                <div class="clearfix text-right">
+                                <%--<div class="clearfix text-right">
                                     <!--<div class="pull-right">
                                       <div class="btn-group">
                                         <button data-toggle="dropdown" class="btn btn-sm btn-inverse dropdown-toggle"> &nbsp; Clear &nbsp; <i class="icon-caret-down"></i> </button>
@@ -244,12 +265,14 @@
                                         <li><a href="#">4</a></li>
                                         <li><a href="#">Next</a></li>
                                     </ul>
-                                </div>
+                                </div>--%>
+                                <jsp:include page="pagination.jsp"></jsp:include>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            </form>
         </div>
     </div>
 </div>

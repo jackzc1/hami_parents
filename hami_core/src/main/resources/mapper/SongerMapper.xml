@@ -12,6 +12,13 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.soft.model.Songer">
     <result column="INTRO" jdbcType="LONGVARCHAR" property="intro" />
   </resultMap>
+
+  <!--多对一配置-->
+  <resultMap id="songerResultMap" type="com.soft.model.Songer" extends="ResultMapWithBLOBs">
+    <association property="mtype" javaType="com.soft.model.Mtype"
+                 resultMap="com.soft.dao.MtypeMapper.BaseResultMap"></association>
+  </resultMap>
+
   <sql id="Base_Column_List">
     SRID, TID, SRNAME, AREA, PIC, IS_HOT
   </sql>
@@ -130,4 +137,36 @@
       IS_HOT = #{isHot,jdbcType=INTEGER}
     where SRID = #{srid,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCondition" parameterType="com.soft.query.SongerQuery" resultMap="songerResultMap">
+    select * from songer s left join mtype m on s.tid = m.tid
+    <where>
+      <if test="srname != null and srname != ''">
+        srname like '%${srname}%'
+      </if>
+      <if test="area != null and area != ''">
+        and area like '%${area}%'
+      </if>
+      <if test="tid != null">
+        and s.tid = #{tid}
+      </if>
+    </where>
+    limit #{startNum}, #{pageSize}
+  </select>
+
+  <select id="selectByConditionConut" parameterType="com.soft.query.SongerQuery" resultType="int">
+    select count(*) from songer s left join mtype m on s.tid = m.tid
+    <where>
+      <if test="srname != null and srname != ''">
+        srname like '%${srname}%'
+      </if>
+      <if test="area != null and area != ''">
+        and area like '%${area}%'
+      </if>
+      <if test="tid != null">
+        and s.tid = #{tid}
+      </if>
+    </where>
+  </select>
+
 </mapper>

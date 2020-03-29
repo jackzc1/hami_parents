@@ -5,4 +5,6 @@ import com.soft.query.SongerQuery;
 
 public interface SongerService extends BaseService<SongerQuery, Songer> {
 
+
+
 }
