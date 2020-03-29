@@ -56,4 +56,21 @@ public class SongerController {
         songerService.deleteByPrimaryKey(Integer.parseInt(srid));
         return "success";
     }
+
+    @RequestMapping(value = "/toSongerUpdate")
+    public String toSongerUpdate(String srid, Model model) {
+        Songer songer = songerService.selectByPrimaryKey(Integer.parseInt(srid));
+        model.addAttribute("songer", songer);
+        List<Mtype> mtypes = mtypeService.selectAll();
+        model.addAttribute("mtypes", mtypes);
+        return "updateSonger";
+    }
+
+    @RequestMapping(value = "/update")
+    public String update(Songer songer) {
+        System.out.println(songer);
+        songerService.updateByPrimaryKey(songer);
+        return "redirect:/songer/list";
+    }
+
 }

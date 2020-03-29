@@ -29,7 +29,7 @@
                 }
             });
             $("#addSong").click(function () {
-                window.location.href = "/songer/add";
+                window.location.href = "/songer/toAdd";
             });
 
             var pageNo = parseInt($("#pageNo").val());
@@ -98,9 +98,17 @@
                 });
 
             })
+            /*$(".modify").click(function () {
+                var srid = parseInt($(this).attr("srid"));
+
+                window.location.href = "/songer/toSongerUpdate?srid="+srid;
+            })*/
+
 
         })
-
+        function toUpdate(d) {
+            window.location.href = "/songer/toSongerUpdate?srid="+d;
+        }
 
 
     </script>
@@ -255,12 +263,13 @@
                                     <c:forEach var="songer" items="${page.list}" varStatus="status">
                                         <tr>
                                             <td class="hidden-xs-portrait">${status.count}</td>
-                                            <td><img src="../../images/1.jpg" /></td>
+                                            <td><img src="${path}${songer.pic}" /></td>
                                             <td> ${songer.srname} </td>
                                             <td class="hidden-xs-portrait">${songer.area}</td>
                                             <td class="hidden-xs"> <p><strong>${songer.isHot == 1?'是':'否'}</strong></p></td>
                                             <td class="hidden-xs"> ${songer.mtype.tname} </td>
-                                            <td><button class="btn btn-sm btn-primary"> 修改 </button>
+                                            <td><%--<button class="btn btn-sm btn-primary" onclick="toUpdate(${songer.srid})" srid="${songer.srid}" modify> 修改 </button>--%>
+                                                <button class="btn btn-sm btn-primary" onclick="toUpdate(${songer.srid})" type="button" >修改</button>
                                                 <button data-toggle="button" class="btn btn-sm btn-warning" srid="${songer.srid}"> 删除 </button></td>
                                         </tr>
                                     </c:forEach>
@@ -301,8 +310,7 @@
     </div>
 </div>
 <div class="bottom-nav footer"> 拓薪教育出品 </div>
-<script>$("#songer").addClass("current");</script>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-
+<script>$("#songer").addClass("current");</script>
 </body>
 </html>
