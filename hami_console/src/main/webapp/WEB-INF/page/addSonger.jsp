@@ -11,8 +11,25 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script>
         $(function () {
-            $("#song").addClass("current");
+
         });
+
+        function submitFile() {
+
+            $('#location').val($('#i-file').val())
+            $("#user-form").ajaxSubmit({
+                url: "/upload/uploadFile",
+                data: {
+                    type: "pic"
+                },
+                dataType: "json",
+                success: function (json) {
+                    $("#songerImg").attr("src", json.realPath)
+                    $("#lastImage").val(json.realPath)
+                    $("#pic").val(json.relativePath)
+                }
+            })
+        }
     </script>
 </head>
 <body>
@@ -105,7 +122,7 @@
                         </div>
                         <div class="widget-content">
                             <div class="body">
-                                <form data-validate="parsley" method="post" novalidate="" class="form-horizontal label-left" id="user-form" />
+                                <form action="/songer/add" data-validate="parsley" method="post" novalidate="" class="form-horizontal label-left" id="user-form" />
 
                                 <fieldset>
                                     <legend class="section">艺人信息</legend>
@@ -125,12 +142,14 @@
 
 
                                     <div class="control-group">
-                                        <label for="tname" class="control-label">流派<span class="required">*</span></label>
+                                        <label for="tid" class="control-label">流派<span class="required">*</span></label>
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2 " >
-                                                <select id="tname" name="tname" class="form-control ">
-                                                    <option>流行</option>
-                                                    <option>摇滚</option>
+                                                <select id="tid" name="tid" class="form-control ">
+                                                    <option value="">--请选择--</option>
+                                                    <c:forEach var="mtype" items="${mtypes}">
+                                                        <option value="${mtype.tid}">${mtype.tname}</option>
+                                                    </c:forEach>
                                                 </select>
 
                                             </div>
@@ -142,8 +161,8 @@
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
                                                 <select id="isHot" name="isHot" class="form-control ">
-                                                    <option>是</option>
-                                                    <option>否</option>
+                                                    <option value="1">是</option>
+                                                    <option value="0">否</option>
                                                 </select>
 
                                             </div>
@@ -159,13 +178,13 @@
 
 
                                     <div class="control-group">
-                                        <label for="" class="control-label">头像<span class="required">*</span></label>
+                                        <label <%--for="songerImg"--%> class="control-label">头像<span class="required">*</span></label>
                                         <div class="controls form-group">
                                             <div class="col-sm-4 col-md-2">
                                                 <div class="image-row">
                                                     <div class="image-set">
                                                         <a class="example-image-link" href="../../img/gallery-photo/image-3.jpg" data-lightbox="example-set" title="Click on the right side of the image to move forward.">
-                                                        <img class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" />
+                                                        <img id="songerImg" class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" />
                                                         </a>
                                                     </div>
                                                 </div>
@@ -181,7 +200,9 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <input type="file" name="pic" id='i-file'  accept=".jpg, .png" onchange="$('#location').val($('#i-file').val());" style="display: none">
+                                            <input type="hidden" name="lastImage" id="lastImage"/>
+                                            <input type="hidden" name="pic" id="pic" lay-verify="pic"/>
+                                            <input type="file" name="picFile" id='i-file'  accept=".jpg, .png" onchange="submitFile()" style="display: none">
                                         </div>
                                     </div>
 
@@ -197,7 +218,7 @@
                         </div>
                     </div>
 <div class="bottom-nav footer"> 拓薪教育出品 </div>
-<script>$("#song").addClass("current");</script>
+<script>$("#songer").addClass("current");</script>
 <script src="../../javascript/lightbox-2.6.min.js"></script>
 <script>
     var _gaq = _gaq || [];

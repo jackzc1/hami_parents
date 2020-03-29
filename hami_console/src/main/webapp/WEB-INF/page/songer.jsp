@@ -29,7 +29,7 @@
                 }
             });
             $("#addSong").click(function () {
-                window.location.href = "addSonger.jsp";
+                window.location.href = "/songer/add";
             });
 
             var pageNo = parseInt($("#pageNo").val());
@@ -75,6 +75,30 @@
                 $("#pageNo").val(1)
                 $("#mtFrom").submit();
             });
+
+            //删除
+            $(".btn-warning").click(function () {
+                var srid = parseInt($(this).attr("srid"));
+
+                layer.confirm('是否确定删除?', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        url: "/songer/deleteSonger",
+                        data: {srid: srid},
+                        type: "POST",
+                        dataType: "text",
+                        success: function (obj) {
+                            if (obj == "success") {
+                                layer.msg("删除成功")
+                                $("#mtFrom").submit();
+                                layer.close(index);
+                            }
+                        }
+                    })
+
+                });
+
+            })
+
         })
 
 
@@ -237,7 +261,7 @@
                                             <td class="hidden-xs"> <p><strong>${songer.isHot == 1?'是':'否'}</strong></p></td>
                                             <td class="hidden-xs"> ${songer.mtype.tname} </td>
                                             <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                                <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
+                                                <button data-toggle="button" class="btn btn-sm btn-warning" srid="${songer.srid}"> 删除 </button></td>
                                         </tr>
                                     </c:forEach>
 
