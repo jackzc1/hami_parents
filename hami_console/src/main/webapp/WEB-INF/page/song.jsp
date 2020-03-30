@@ -29,7 +29,7 @@
                 }
             });
             $("#addSong").click(function () {
-                window.location.href = "addSong.jsp";
+                window.location.href = "/song/toAdd";
             });
 
             var pageNo = parseInt($("#pageNo").val());

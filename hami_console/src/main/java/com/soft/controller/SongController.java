@@ -1,7 +1,9 @@
 package com.soft.controller;
 
+import com.soft.model.Album;
 import com.soft.model.Mtype;
 import com.soft.model.Song;
+import com.soft.model.Songer;
 import com.soft.query.SongQuery;
 import com.soft.service.AlbumService;
 import com.soft.service.MtypeService;
@@ -28,7 +30,10 @@ public class SongController {
     @Autowired
     private SongerService songerService;
 
+    @Autowired
+    private AlbumService albumService;
 
+    //条件查询
     @RequestMapping(value = "/list")
     public String list(SongQuery songQuery, Model model) {
         if (songQuery.getPageNo() == null) {
@@ -43,4 +48,22 @@ public class SongController {
         return "song";
     }
 
+    //跳转到添加
+    @RequestMapping(value = "/toAdd")
+    public String toAdd(Model model) {
+        List<Mtype> mtypes = mtypeService.selectAll();
+        model.addAttribute("mtypes", mtypes);
+        List<Songer> songers = songerService.selectAll();
+        model.addAttribute("songers", songers);
+        List<Album> albums = albumService.selectAll();
+        model.addAttribute("albums", albums);
+        return "addSong";
+    }
+
+    //添加
+    @RequestMapping(value = "/add")
+    public String add(Song song) {
+        songService.insert(song);
+        return "redirect:/song/list";
+    }
 }

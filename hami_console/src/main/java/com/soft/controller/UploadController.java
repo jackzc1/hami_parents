@@ -29,10 +29,10 @@ public class UploadController {
 
         MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> fileMap = multipartHttpServletRequest.getFileMap();
-        Set<String> keySet = fileMap.keySet();
+        /*Set<String> keySet = fileMap.keySet();
         Iterator<String> iterator = keySet.iterator();
-        String key = iterator.next();
-        MultipartFile multipartFile = fileMap.get(key);
+        String key = iterator.next();*/
+        MultipartFile multipartFile = fileMap.get("picFile");
         byte[] bytes = multipartFile.getBytes();
 
         String originalFilename = multipartFile.getOriginalFilename();
@@ -70,4 +70,37 @@ public class UploadController {
         }
 
     }
+
+    /*Mp3上传*/
+    @RequestMapping(value = "/uploadFileMp3")
+    public void uploadFileMp3(HttpServletRequest request, HttpServletResponse response,
+                           String lastMp3, String type) throws IOException {
+
+        MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+        Map<String, MultipartFile> fileMap = multipartHttpServletRequest.getFileMap();
+        MultipartFile multipartFile = fileMap.get("mp3File");
+        byte[] bytes = multipartFile.getBytes();
+
+        String originalFilename = multipartFile.getOriginalFilename();
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString();
+        fileName = fileName + suffix;
+
+        Client client = Client.create();
+
+        if (StringUtils.isNotBlank(lastMp3)) {
+            WebResource resource = client.resource(lastMp3);
+            resource.delete();
+        }
+
+        WebResource resource1 = client.resource(PropReader.sysReader("filePath") + "/" + type + "/" + fileName);
+        resource1.put(bytes);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("realPath", PropReader.sysReader("filePath") + "/" + type + "/" + fileName);
+        jsonObject.put("relativePath", "/" + type + "/" + fileName);
+        response.getWriter().write(jsonObject.toString());
+
+    }
+
 }

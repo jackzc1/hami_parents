@@ -13,6 +13,39 @@
         $(function () {
             $("#song").addClass("current");
         });
+
+        function submitFile() {
+
+            $('#location').val($('#i-file').val())
+            $("#user-form").ajaxSubmit({
+                url: "/upload/uploadFile",
+                data: {
+                    type: "pic"
+                },
+                dataType: "json",
+                success: function (json) {
+                    $("#songImg").attr("src", json.realPath)
+                    $("#lastImage").val(json.realPath)
+                    $("#pic").val(json.relativePath)
+                }
+            })
+        }
+
+        function mp3SubmitFile() {
+
+            $('#mp3loc').val($('#i-file1').val())
+            $("#user-form").ajaxSubmit({
+                url: "/upload/uploadFileMp3",
+                data: {
+                    type: "mp3"
+                },
+                dataType: "json",
+                success: function (json) {
+                    $("#lastMp3").val(json.realPath)
+                    $("#mp3").val(json.relativePath)
+                }
+            })
+        }
     </script>
 </head>
 <body>
@@ -105,7 +138,7 @@
                         </div>
                         <div class="widget-content">
                             <div class="body">
-                                <form data-validate="parsley" method="post" novalidate="" class="form-horizontal label-left" id="user-form" />
+                                <form action="/song/add" data-validate="parsley" method="post" novalidate="" class="form-horizontal label-left" id="user-form" />
 
                                 <fieldset>
                                     <legend class="section">歌曲信息</legend>
@@ -128,36 +161,42 @@
                                         </div>
                                     </div>--%>
                                     <div class="control-group">
-                                        <label for="songer" class="control-label">歌手<span class="required">*</span></label>
+                                        <label for="srid" class="control-label">歌手<span class="required">*</span></label>
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
-                                                <select id="songer" name="songer" class="form-control ">
-                                                    <option>黄家驹</option>
-                                                    <option>郑智化</option>
+                                                <select id="srid" name="srid" class="form-control ">
+                                                    <option value="">-----请选择-----</option>
+                                                    <c:forEach var="songer" items="${songers}">
+                                                        <option value="${songer.srid}">${songer.srname}</option>
+                                                    </c:forEach>
                                                 </select>
 
                                             </div>
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="album" class="control-label">专辑<span class="required">*</span></label>
+                                        <label for="aid" class="control-label">专辑<span class="required">*</span></label>
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
-                                                <select id="album" name="mtype" class="form-control ">
-                                                    <option>海阔天空</option>
-                                                    <option>水手</option>
+                                                <select id="aid" name="aid" class="form-control ">
+                                                    <option value="">-----请选择-----</option>
+                                                    <c:forEach var="album" items="${albums}">
+                                                        <option value="${album.aid}">${album.aname}</option>
+                                                    </c:forEach>
                                                 </select>
 
                                             </div>
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="mtype" class="control-label">流派<span class="required">*</span></label>
+                                        <label for="tid" class="control-label">流派<span class="required">*</span></label>
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
-                                                <select id="mtype" name="mtype" class="form-control ">
-                                                    <option>流行</option>
-                                                    <option>摇滚</option>
+                                                <select id="tid" name="tid" class="form-control ">
+                                                    <option value="">-----请选择-----</option>
+                                                    <c:forEach var="mtype" items="${mtypes}">
+                                                        <option value="${mtype.tid}">${mtype.tname}</option>
+                                                    </c:forEach>
                                                 </select>
 
                                             </div>
@@ -168,8 +207,8 @@
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
                                                 <select id="isNew" name="isNew" class="form-control ">
-                                                    <option>是</option>
-                                                    <option>否</option>
+                                                    <option value="1">是</option>
+                                                    <option value="0">否</option>
                                                 </select>
 
                                             </div>
@@ -180,19 +219,23 @@
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
                                                 <select id="isHot" name="isHot" class="form-control ">
-                                                    <option>是</option>
-                                                    <option>否</option>
+                                                    <option value="1">是</option>
+                                                    <option value="0">否</option>
                                                 </select>
 
                                             </div>
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="mtype" class="control-label">图片<span class="required">*</span></label>
+                                        <label for="songImg" class="control-label">图片<span class="required">*</span></label>
                                         <div class="controls form-group">
                                             <div class="col-sm-4 col-md-2">
                                                 <div class="image-row">
-                                                    <div class="image-set"> <a class="example-image-link" href="../../img/gallery-photo/image-3.jpg" data-lightbox="example-set" title="Click on the right side of the image to move forward."> <img class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" /></a> </div>
+                                                    <div class="image-set">
+                                                        <a class="example-image-link" href="../../img/gallery-photo/image-3.jpg" data-lightbox="example-set" title="Click on the right side of the image to move forward.">
+                                                            <img id="songImg" class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" />
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -210,7 +253,9 @@
                                                 </label>
                                             </div>
                                         </div>
-                                        <input type="file" name="pic" id='i-file'  accept=".jpg, .png" onchange="$('#location').val($('#i-file').val());" style="display: none">
+                                            <input type="hidden" name="lastImage" id="lastImage"/>
+                                            <input type="hidden" name="pic" id="pic" lay-verify="pic"/>
+                                            <input type="file" name="picFile" id='i-file'  accept=".jpg, .png" onchange="submitFile()" style="display: none">
                                         </div>
                                     </div>
 
@@ -228,17 +273,19 @@
                                             <span class="help-block">请入lyc格式歌词</span> </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="i1-file" class="control-label">选择歌曲 <span class="required">*</span></label>
+                                        <label for="i1-file1" class="control-label">选择歌曲 <span class="required">*</span></label>
                                         <!--<div class="col-sm-4 control-label">选择文件</div>-->
                                         <div class="col-sm-6">
                                             <div class="input-group">
-                                                <input id='mp3loc' class="form-control" onclick="$('#i-file').click();">
+                                                <input id='mp3loc' class="form-control" onclick="$('#i-file1').click();">
                                                 <label class="input-group-btn">
-                                                    <input type="button" id="i1-check" value="选择歌曲文件" class="btn btn-primary" onclick="$('#i1-file').click();">
+                                                    <input type="button" id="i1-check" value="选择歌曲文件" class="btn btn-primary" onclick="$('#i1-file1').click();">
                                                 </label>
                                             </div>
                                         </div>
-                                        <input type="file" name="mp3" id='i1-file'  accept=".mp3, .wma" onchange="$('#mp3loc').val($('#i1-file').val());" style="display: none">
+                                        <input type="hidden" name="lastMp3" id="lastMp3"/>
+                                        <input type="hidden" name="mp3" id="mp3" lay-verify="mp3"/>
+                                        <input type="file" name="mp3File" id='i1-file1'  accept=".mp3, .wma" onchange="mp3SubmitFile()" style="display: none">
 
                                     </div>
 

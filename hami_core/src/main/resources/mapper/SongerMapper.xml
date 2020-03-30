@@ -13,6 +13,10 @@
     <result column="INTRO" jdbcType="LONGVARCHAR" property="intro" />
   </resultMap>
 
+  <select id="selectAll" parameterType="com.soft.model.Songer" resultMap="BaseResultMap">
+    select * from songer
+  </select>
+
   <!--多对一配置-->
   <resultMap id="songerResultMap" type="com.soft.model.Songer" extends="ResultMapWithBLOBs">
     <association property="mtype" javaType="com.soft.model.Mtype"

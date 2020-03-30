@@ -9,6 +9,10 @@
     <result column="PDATE" jdbcType="DATE" property="pdate" />
     <result column="LANG" jdbcType="VARCHAR" property="lang" />
   </resultMap>
+
+  <select id="selectAll" parameterType="com.soft.model.Album" resultMap="BaseResultMap">
+    select * from album
+  </select>
   <sql id="Base_Column_List">
     AID, ANAME, PIC, COMPANY, PDATE, LANG
   </sql>
