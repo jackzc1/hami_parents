@@ -7,12 +7,34 @@ public class SongQuery extends Song {
     private Integer pageNo;
     private Integer pageSize = 5;
 
+    private String srname;
+    private String aname;
+
+
+    public String getSrname() {
+        return srname;
+    }
+
+    public void setSrname(String srname) {
+        this.srname = srname;
+    }
+
+    public String getAname() {
+        return aname;
+    }
+
+    public void setAname(String aname) {
+        this.aname = aname;
+    }
+
     @Override
     public String toString() {
-        return "SongerQuery{" +
+        return "SongQuery{" +
                 "startNum=" + startNum +
                 ", pageNo=" + pageNo +
                 ", pageSize=" + pageSize +
+                ", srname='" + srname + '\'' +
+                ", aname='" + aname + '\'' +
                 '}';
     }
 
@@ -40,11 +62,12 @@ public class SongQuery extends Song {
         this.pageSize = pageSize;
     }
 
-    public SongQuery(Integer startNum, Integer pageNo, Integer pageSize) {
-
+    public SongQuery(Integer startNum, Integer pageNo, Integer pageSize, String tname, String srname, String aname) {
         this.startNum = startNum;
         this.pageNo = pageNo;
         this.pageSize = pageSize;
+        this.srname = srname;
+        this.aname = aname;
     }
 
     public SongQuery() {

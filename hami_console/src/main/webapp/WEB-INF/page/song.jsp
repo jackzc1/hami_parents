@@ -4,6 +4,11 @@
 <head>
     <title>tx 音乐是生活的调味剂</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        #fanye .disabled{
+            pointer-events:none;
+        }
+    </style>
 
     <script>
 
@@ -25,6 +30,50 @@
             });
             $("#addSong").click(function () {
                 window.location.href = "addSong.jsp";
+            });
+
+            var pageNo = parseInt($("#pageNo").val());
+            var totalPage = parseInt($("#totalPage").val());
+
+            if (pageNo == 1 && pageNo == totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            if (pageNo == 1 && pageNo < totalPage) {
+                $("#pre").addClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo < totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").removeClass("disabled")
+            }
+            if (pageNo > 1 && pageNo == totalPage) {
+                $("#pre").removeClass("disabled")
+                $("#next").addClass("disabled")
+            }
+
+            $("#pre a").click(function () {
+                pageNo = pageNo - 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#next a").click(function () {
+                pageNo = pageNo + 1;
+                $("#pageNo").val(pageNo)
+                $("#mtFrom").submit();
+            })
+
+            $("#toNum a").click(function () {
+                var val = $(this).text();
+                $("#pageNo").val(val)
+                $("#mtFrom").submit();
+            })
+
+            $("#search").click(function () {
+                $("#pageNo").val(1)
+                $("#mtFrom").submit();
             });
         })
 
@@ -114,51 +163,53 @@
                     <h2 class="page-title">歌曲列表 <small>favor song</small></h2>
                 </div>
             </div>
-
-            <div class="row">
+            <form id="mtFrom" action="/song/list" method="post" class="form-horizontal" />
+                <div class="row">
                 <div class="col-lg-12">
                     <div class="widget">
                         <div class="widget-header"> <i class="icon-list-ol"></i>
                             <h3>搜索条件</h3>
                         </div>
                         <div class="widget-content">
-                            <form method="post" class="form-horizontal" />
+
                             <fieldset id="find">
                                 <!--<legend class="section">Horizontal form</legend>-->
                                 <div class="control-group">
                                     <label for="sname" class="control-label">歌名</label>
                                     <div class="controls form-group">
                                         <div class="input-group"> <span class="input-group-addon"><i class="icon-music"></i></span>
-                                            <input type="text" placeholder="如：想你的365天" name="sname" id="sname" class="form-control" />
+                                            <input type="text" value="${sq.sname}" placeholder="如：想你的365天" name="sname" id="sname" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label for="songer" class="control-label">歌手</label>
+                                    <label for="srname" class="control-label">歌手</label>
                                     <div class="controls form-group">
                                         <div class="input-group"> <span class="input-group-addon"><i class="icon-user"></i></span>
-                                            <input type="text" placeholder="如：李玟" name="songer" id="songer" class="form-control" />
+                                            <input type="text" value="${sq.srname}" placeholder="如：李玟" name="srname" id="srname" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="control-group">
-                                    <label for="album" class="control-label">专辑</label>
+                                    <label for="aname" class="control-label">专辑</label>
                                     <div class="controls form-group">
                                         <div class="input-group"> <span class="input-group-addon"><i class="icon-reorder"></i></span>
-                                            <input type="text" placeholder="如：宝莲灯" name="album" id="album" class="form-control" />
+                                            <input type="text" placeholder="如：宝莲灯" value="${sq.aname}"  name="aname" id="aname" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
 
 
                                 <div class="control-group">
-                                    <label for="mtype" class="control-label">流派</label>
+                                    <label for="tid" class="control-label">流派</label>
 
                                     <div class="controls form-group">
-                                        <select id="mtype" name="mtype" class="form-control ">
-                                            <option>流行</option>
-                                            <option>摇滚</option>
+                                        <select id="tid" name="tid" class="form-control ">
+                                            <option value="">-----请选择-----</option>
+                                            <c:forEach var="mtype" items="${mtypes}">
+                                                <option value="${mtype.tid}" <c:if test="${mtype.tid == sq.tid}">selected</c:if>>${mtype.tname}</option>
+                                            </c:forEach>
                                         </select>
 
                                     </div>
@@ -173,7 +224,7 @@
                                 </div>
                             </div>
 
-                            </form>
+
                         </div>
                         <div class="widget-content" >
                             <div class="body">
@@ -191,86 +242,28 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 想你的365天 </td>
-                                        <td class="hidden-xs-portrait">李玟</td>
-                                        <td class="hidden-xs"> <p><strong>碰碰看爱情</strong></p> <p>电视剧《宝莲灯》2005插曲</p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 想你的365天 </td>
-                                        <td class="hidden-xs-portrait">李玟</td>
-                                        <td class="hidden-xs"> <p><strong>碰碰看爱情</strong></p> <p>电视剧《宝莲灯》2005插曲</p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 想你的365天 </td>
-                                        <td class="hidden-xs-portrait">李玟</td>
-                                        <td class="hidden-xs"> <p><strong>碰碰看爱情</strong></p> <p>电视剧《宝莲灯》2005插曲</p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 想你的365天 </td>
-                                        <td class="hidden-xs-portrait">李玟</td>
-                                        <td class="hidden-xs"> <p><strong>碰碰看爱情</strong></p> <p>电视剧《宝莲灯》2005插曲</p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="hidden-xs-portrait">1</td>
-                                        <td><img src="../../images/1.jpg" /></td>
-                                        <td> 想你的365天 </td>
-                                        <td class="hidden-xs-portrait">李玟</td>
-                                        <td class="hidden-xs"> <p><strong>碰碰看爱情</strong></p> <p>电视剧《宝莲灯》2005插曲</p></td>
-                                        <td class="hidden-xs"> 摇滚 </td>
-                                        <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                            <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
-                                    </tr>
+                                    <c:forEach items="${page.list}" var="song" varStatus="status">
+                                        <tr>
+                                            <td class="hidden-xs-portrait">${status.count}</td>
+                                            <td><img src="${path}${song.pic}" /></td>
+                                            <td> ${song.sname} </td>
+                                            <td class="hidden-xs-portrait">${song.songer.srname}</td>
+                                            <td class="hidden-xs"> <p><strong>${song.album.aname}</strong></p></td>
+                                            <td class="hidden-xs"> ${song.mtype.tname} </td>
+                                            <td><button class="btn btn-sm btn-primary"> 修改 </button>
+                                                <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
+                                        </tr>
+                                    </c:forEach>
+
                                     </tbody>
                                 </table>
-                                <div class="clearfix text-right">
-                                    <!--<div class="pull-right">
-                                      <div class="btn-group">
-                                        <button data-toggle="dropdown" class="btn btn-sm btn-inverse dropdown-toggle"> &nbsp; Clear &nbsp; <i class="icon-caret-down"></i> </button>
-                                        <ul class="dropdown-menu">
-                                          <li><a href="#">Clear</a></li>
-                                          <li><a href="#">Move ...</a></li>
-                                          <li><a href="#">Something else here</a></li>
-                                          <li class="divider"></li>
-                                          <li><a href="#">Separated link</a></li>
-                                        </ul>
-                                      </div>
-                                      <button class="btn btn-default btn-sm"> Send to ... </button>
-                                    </div>-->
-                                    <ul class="pagination no-margin">
-                                        <li class="disabled"><a href="#">Prev</a></li>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>
-                                </div>
+                                <jsp:include page="pagination.jsp"></jsp:include>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            </form>
         </div>
     </div>
 </div>

@@ -18,6 +18,19 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.soft.model.Song">
     <result column="LRC" jdbcType="LONGVARCHAR" property="lrc" />
   </resultMap>
+
+
+  <!--多对一配置-->
+  <resultMap id="songResultMap" type="com.soft.model.Song" extends="ResultMapWithBLOBs">
+    <association property="mtype" javaType="com.soft.model.Mtype"
+                 resultMap="com.soft.dao.MtypeMapper.BaseResultMap"></association>
+    <association property="songer" javaType="com.soft.model.Songer"
+                 resultMap="com.soft.dao.SongerMapper.BaseResultMap"></association>
+    <association property="album" javaType="com.soft.model.Album"
+                 resultMap="com.soft.dao.AlbumMapper.BaseResultMap"></association>
+  </resultMap>
+
+
   <sql id="Base_Column_List">
     SID, TID, SRID, AID, SNAME, PIC, MP3, IS_HOT, IS_NEW, PTIMES, AUDIT_STATUS, SHOW_STATUS
   </sql>
@@ -206,4 +219,62 @@
       SHOW_STATUS = #{showStatus,jdbcType=INTEGER}
     where SID = #{sid,jdbcType=INTEGER}
   </update>
+
+
+  <select id="selectByCondition" parameterType="com.soft.query.SongQuery" resultMap="songResultMap">
+    select
+    s.SID,
+    s.TID,
+    s.SRID,
+    s.AID,
+    s.SNAME,
+    s.MP3,
+    s.IS_HOT,
+    s.IS_NEW,
+    s.PTIMES,
+    s.AUDIT_STATUS,
+    s.SHOW_STATUS,
+    m.TNAME,
+    sr.SRNAME,
+    sr.PIC,
+    a.ANAME
+    from song s left join mtype m on s.tid = m.tid
+    LEFT JOIN songer sr on s.srid = sr.srid
+    LEFT JOIN  album a on s.aid = a.aid
+    <where>
+      <if test="sname != null and sname != ''">
+        sname like '%${sname}%'
+      </if>
+      <if test="srname != null and srname != ''">
+        and sr.srname like '%${srname}%'
+      </if>
+      <if test="aname != null and aname != ''">
+        and a.aname like '%${aname}%'
+      </if>
+      <if test="tid != null and tid != ''">
+        and s.tid = #{tid}
+      </if>
+    </where>
+    limit #{startNum}, #{pageSize}
+  </select>
+
+  <select id="selectByConditionConut" parameterType="com.soft.query.SongQuery" resultType="int">
+    select count(*) from song s left join mtype m on s.tid = m.tid
+    LEFT JOIN songer sr on s.srid = sr.srid
+    LEFT JOIN  album a on s.aid = a.aid
+    <where>
+      <if test="sname != null and sname != ''">
+        sname like '%${sname}%'
+      </if>
+      <if test="srname != null and srname != ''">
+        and sr.srname like '%${srname}%'
+      </if>
+      <if test="aname != null and aname != ''">
+        and a.aname like '%${aname}%'
+      </if>
+      <if test="tid != null and tid != ''">
+        and s.tid = #{tid}
+      </if>
+    </where>
+  </select>
 </mapper>
