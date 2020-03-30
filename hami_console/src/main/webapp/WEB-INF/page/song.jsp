@@ -100,7 +100,9 @@
             })
         })
 
-
+        function toUpdate(d) {
+            window.location.href = "/song/toUpdate?sid="+d;
+        }
 
     </script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
@@ -273,7 +275,8 @@
                                             <td class="hidden-xs-portrait">${song.songer.srname}</td>
                                             <td class="hidden-xs"> <p><strong>${song.album.aname}</strong></p></td>
                                             <td class="hidden-xs"> ${song.mtype.tname} </td>
-                                            <td><button class="btn btn-sm btn-primary"> 修改 </button>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary" onclick="toUpdate(${song.sid})" type="button" >修改</button>
                                                 <button data-toggle="button" class="btn btn-sm btn-warning sc" sid="${song.sid}"> 删除 </button></td>
                                         </tr>
                                     </c:forEach>

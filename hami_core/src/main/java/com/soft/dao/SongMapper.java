@@ -5,4 +5,6 @@ import com.soft.query.SongQuery;
 
 public interface SongMapper extends BaseMapper<SongQuery, Song> {
 
+    int updateByPrimaryKeyLRC(Song record);
+
 }

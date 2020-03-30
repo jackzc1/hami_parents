@@ -138,22 +138,22 @@
                         </div>
                         <div class="widget-content">
                             <div class="body">
-                                <form action="/song/add" data-validate="parsley" method="post" novalidate="" class="form-horizontal label-left" id="user-form" />
-
+                                <form action="/song/update" data-validate="parsley" method="post" novalidate="" class="form-horizontal label-left" id="user-form" />
+                                <input type="hidden" name="sid" id="sid" value="${song.sid}"/>
                                 <fieldset>
                                     <legend class="section">歌曲信息</legend>
                                     <div class="control-group">
                                         <label for="sname" class="control-label">歌名</label>
                                         <div class="controls form-group">
-                                            <input type="text" class="col-sm-6 col-xs-12" name="sname" id="sname" />
+                                            <input type="text" value="${song.sname}" class="col-sm-6 col-xs-12" name="sname" id="sname" />
                                         </div>
                                     </div>
-                                    <div class="control-group">
-                                        <label for="singer" class="control-label">歌手名字 <span class="required">*</span></label>
+                                    <%--<div class="control-group">
+                                        <label for="srname" class="control-label">歌手名字 <span class="required">*</span></label>
                                         <div class="controls form-group">
-                                            <input type="text" class="col-sm-6 col-xs-12 parsley-validated" required="" name="singer" id="singer" />
+                                            <input type="text" value="${song.songer.srname}" class="col-sm-6 col-xs-12 parsley-validated" required="" name="srname" id="srname" />
                                         </div>
-                                    </div>
+                                    </div>--%>
                                     <%--<div class="control-group">
                                         <label for="album" class="control-label">专辑 <span class="required">*</span></label>
                                         <div class="controls form-group">
@@ -167,7 +167,7 @@
                                                 <select id="srid" name="srid" class="form-control ">
                                                     <option value="">-----请选择-----</option>
                                                     <c:forEach var="songer" items="${songers}">
-                                                        <option value="${songer.srid}">${songer.srname}</option>
+                                                        <option value="${songer.srid}" <c:if test="${songer.srid == song.srid}">selected</c:if>>${songer.srname}</option>
                                                     </c:forEach>
                                                 </select>
 
@@ -181,7 +181,7 @@
                                                 <select id="aid" name="aid" class="form-control ">
                                                     <option value="">-----请选择-----</option>
                                                     <c:forEach var="album" items="${albums}">
-                                                        <option value="${album.aid}">${album.aname}</option>
+                                                        <option value="${album.aid}" <c:if test="${album.aid == song.aid}">selected</c:if>>${album.aname}</option>
                                                     </c:forEach>
                                                 </select>
 
@@ -195,7 +195,7 @@
                                                 <select id="tid" name="tid" class="form-control ">
                                                     <option value="">-----请选择-----</option>
                                                     <c:forEach var="mtype" items="${mtypes}">
-                                                        <option value="${mtype.tid}">${mtype.tname}</option>
+                                                        <option value="${mtype.tid}" <c:if test="${mtype.tid == song.tid}">selected</c:if>>${mtype.tname}</option>
                                                     </c:forEach>
                                                 </select>
 
@@ -207,8 +207,8 @@
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
                                                 <select id="isNew" name="isNew" class="form-control ">
-                                                    <option value="1">是</option>
-                                                    <option value="0">否</option>
+                                                    <option value="1" <c:if test="${song.isNew == 1}">selected</c:if>>是</option>
+                                                    <option value="0" <c:if test="${song.isNew == 0}">selected</c:if>>否</option>
                                                 </select>
 
                                             </div>
@@ -219,8 +219,8 @@
                                         <div class="controls form-group">
                                             <div data-toggle="buttons" class="btn-group col-sm-2" >
                                                 <select id="isHot" name="isHot" class="form-control ">
-                                                    <option value="1">是</option>
-                                                    <option value="0">否</option>
+                                                    <option value="1" <c:if test="${song.isHot == 1}">selected</c:if>>是</option>
+                                                    <option value="0" <c:if test="${song.isHot == 0}">selected</c:if>>否</option>
                                                 </select>
 
                                             </div>
@@ -232,8 +232,8 @@
                                             <div class="col-sm-4 col-md-2">
                                                 <div class="image-row">
                                                     <div class="image-set">
-                                                        <a class="example-image-link" href="../../img/gallery-photo/image-3.jpg" data-lightbox="example-set" title="Click on the right side of the image to move forward.">
-                                                            <img id="songImg" class="example-image" src="../../img/gallery-photo/thumb-3.jpg" alt="Plants: image 1 0f 4 thumb" width="150" height="150" />
+                                                        <a class="example-image-link" href="${path}${song.pic}" data-lightbox="example-set" title="Click on the right side of the image to move forward.">
+                                                            <img id="songImg" class="example-image" src="${path}${song.pic}" alt="Plants: image 1 0f 4 thumb" width="150" height="150" />
                                                         </a>
                                                     </div>
                                                 </div>
@@ -245,16 +245,16 @@
                                         <label for="i-file" class="control-label">选择文件 <span class="required">*</span></label>
                                         <!--<div class="col-sm-4 control-label">选择文件</div>-->
                                         <div id="examples" class="section examples-section">
-                                        <div class="col-sm-6">
-                                            <div class="input-group">
-                                                <input id='location' class="form-control" onclick="$('#i-file').click();">
-                                                <label class="input-group-btn">
-                                                    <input type="button" id="i-check" value="选择封面" class="btn btn-primary" onclick="$('#i-file').click();">
-                                                </label>
+                                            <div class="col-sm-6">
+                                                <div class="input-group">
+                                                    <input id='location' value="${path}${song.pic}" class="form-control" onclick="$('#i-file').click();">
+                                                    <label class="input-group-btn">
+                                                        <input type="button" id="i-check" value="选择封面" class="btn btn-primary" onclick="$('#i-file').click();">
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
                                             <input type="hidden" name="lastImage" id="lastImage"/>
-                                            <input type="hidden" name="pic" id="pic" lay-verify="pic"/>
+                                            <input type="hidden" name="pic" id="pic" value="${song.pic}" lay-verify="pic"/>
                                             <input type="file" name="picFile" id='i-file'  accept=".jpg, .png" onchange="submitFile()" style="display: none">
                                         </div>
                                     </div>
@@ -269,7 +269,7 @@
                                     <div class="control-group">
                                         <label class="control-label" for="description">歌词</label>
                                         <div class="controls form-group">
-                                            <textarea class="form-control" name="lrc" rows="3" id="description"></textarea>
+                                            <textarea class="form-control" name="lrc" rows="3" id="description">${song.lrc}</textarea>
                                             <span class="help-block">请入lrc格式歌词</span> </div>
                                     </div>
                                     <div class="control-group">
@@ -277,14 +277,14 @@
                                         <!--<div class="col-sm-4 control-label">选择文件</div>-->
                                         <div class="col-sm-6">
                                             <div class="input-group">
-                                                <input id='mp3loc' class="form-control" onclick="$('#i-file1').click();">
+                                                <input id='mp3loc' value="${song.mp3}" class="form-control" onclick="$('#i-file1').click();">
                                                 <label class="input-group-btn">
                                                     <input type="button" id="i1-check" value="选择歌曲文件" class="btn btn-primary" onclick="$('#i1-file1').click();">
                                                 </label>
                                             </div>
                                         </div>
                                         <input type="hidden" name="lastMp3" id="lastMp3"/>
-                                        <input type="hidden" name="mp3" id="mp3" lay-verify="mp3"/>
+                                        <input type="hidden" name="mp3" id="mp3" value="${song.mp3}" lay-verify="mp3"/>
                                         <input type="file" name="mp3File" id='i1-file1'  accept=".mp3, .wma" onchange="mp3SubmitFile()" style="display: none">
 
                                     </div>
@@ -292,7 +292,7 @@
 
                                 </fieldset>
                                 <div class="form-actions text-right">
-                                    <button class="btn btn-primary" type="submit">提交歌曲</button>
+                                    <button class="btn btn-primary" type="submit">修改歌曲</button>
                                 </div>
                                 </form>
                             </div>
@@ -302,20 +302,20 @@
             </div>
         </div>
     </div>
-<div class="bottom-nav footer"> 拓薪教育出品 </div>
-<script>$("#song").addClass("current");</script>
-<script src="../../javascript/lightbox-2.6.min.js"></script>
-<script>
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-2196019-1']);
-    _gaq.push(['_trackPageview']);
+    <div class="bottom-nav footer"> 拓薪教育出品 </div>
+    <script>$("#song").addClass("current");</script>
+    <script src="../../javascript/lightbox-2.6.min.js"></script>
+    <script>
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-2196019-1']);
+        _gaq.push(['_trackPageview']);
 
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-</script>
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
 
 </body>
 </html>

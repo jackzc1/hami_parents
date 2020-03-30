@@ -277,4 +277,21 @@
       </if>
     </where>
   </select>
+
+  <update id="updateByPrimaryKeyLRC" parameterType="com.soft.model.Song">
+    update song
+    set TID = #{tid,jdbcType=INTEGER},
+    SRID = #{srid,jdbcType=INTEGER},
+    AID = #{aid,jdbcType=INTEGER},
+    SNAME = #{sname,jdbcType=VARCHAR},
+    PIC = #{pic,jdbcType=VARCHAR},
+    MP3 = #{mp3,jdbcType=VARCHAR},
+    IS_HOT = #{isHot,jdbcType=INTEGER},
+    IS_NEW = #{isNew,jdbcType=INTEGER},
+    PTIMES = #{ptimes,jdbcType=INTEGER},
+    AUDIT_STATUS = #{auditStatus,jdbcType=INTEGER},
+    SHOW_STATUS = #{showStatus,jdbcType=INTEGER},
+    LRC = #{lrc,jdbcType=LONGVARCHAR}
+    where SID = #{sid,jdbcType=INTEGER}
+  </update>
 </mapper>

@@ -7,6 +7,6 @@ import com.soft.query.SongerQuery;
 
 public interface SongService extends BaseService<SongQuery, Song> {
 
-
+    int updateByPrimaryKeyLRC(Song record);
 
 }

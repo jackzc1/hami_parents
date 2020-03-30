@@ -75,4 +75,33 @@ public class SongController {
         songService.deleteByPrimaryKey(Integer.parseInt(sid));
         return "success";
     }
+
+    //修改
+    @RequestMapping(value = "/toUpdate")
+    public String toUpdate(String sid, Model model) {
+        Song song = songService.selectByPrimaryKey(Integer.parseInt(sid));
+        List<Mtype> mtypes = mtypeService.selectAll();
+        List<Album> albums = albumService.selectAll();
+        List<Songer> songers = songerService.selectAll();
+
+        Mtype mtype = mtypeService.selectByPrimaryKey(song.getTid());
+        Album album = albumService.selectByPrimaryKey(song.getAid());
+        Songer songer = songerService.selectByPrimaryKey(song.getSrid());
+        song.setMtype(mtype);
+        song.setAlbum(album);
+        song.setSonger(songer);
+
+        model.addAttribute("song", song);
+        model.addAttribute("mtypes", mtypes);
+        model.addAttribute("albums", albums);
+        model.addAttribute("songers", songers);
+        return "updateSong";
+    }
+
+    @RequestMapping(value = "/update")
+    public String update(Song song) {
+        System.out.println(song);
+        songService.updateByPrimaryKeyLRC(song);
+        return "redirect:/song/list";
+    }
 }

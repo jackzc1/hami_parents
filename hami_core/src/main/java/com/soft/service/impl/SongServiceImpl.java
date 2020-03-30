@@ -17,4 +17,9 @@ public class SongServiceImpl extends BaseServiceImpl<SongQuery, Song> implements
         this.songMapper = songMapper;
         this.baseMapper = songMapper;
     }
+
+    @Override
+    public int updateByPrimaryKeyLRC(Song record) {
+        return songMapper.updateByPrimaryKeyLRC(record);
+    }
 }
