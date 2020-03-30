@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -65,5 +66,13 @@ public class SongController {
     public String add(Song song) {
         songService.insert(song);
         return "redirect:/song/list";
+    }
+
+    //删除
+    @RequestMapping(value = "/deleteSong")
+    @ResponseBody
+    public String deleteSong(String sid) {
+        songService.deleteByPrimaryKey(Integer.parseInt(sid));
+        return "success";
     }
 }

@@ -9,7 +9,7 @@
             pointer-events:none;
         }
     </style>
-
+    <script src="/js/layui/layui.all.js" charset="utf-8"></script>
     <script>
 
 
@@ -75,6 +75,29 @@
                 $("#pageNo").val(1)
                 $("#mtFrom").submit();
             });
+
+            //删除
+            $(".btn-warning").click(function () {
+                var sid = parseInt($(this).attr("sid"));
+                layer.confirm('是否确定删除?', {icon: 3, title:'提示'}, function(index){
+                    $.ajax({
+                        url: "/song/deleteSong",
+                        data: {sid: sid},
+                        type: "POST",
+                        dataType: "text",
+                        success: function (obj) {
+                            if (obj == "success") {
+                                layer.msg("删除成功")
+                                $("#pageNo").val(1)
+                                $("#mtFrom").submit();
+                                layer.close(index);
+                            }
+                        }
+                    })
+
+                });
+
+            })
         })
 
 
@@ -251,7 +274,7 @@
                                             <td class="hidden-xs"> <p><strong>${song.album.aname}</strong></p></td>
                                             <td class="hidden-xs"> ${song.mtype.tname} </td>
                                             <td><button class="btn btn-sm btn-primary"> 修改 </button>
-                                                <button data-toggle="button" class="btn btn-sm btn-warning"> 删除 </button></td>
+                                                <button data-toggle="button" class="btn btn-sm btn-warning sc" sid="${song.sid}"> 删除 </button></td>
                                         </tr>
                                     </c:forEach>
 
