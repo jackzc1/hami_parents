@@ -54,10 +54,10 @@ public class Page<T> {
     }
 
     public Integer getTotalPage() {
-        /*totalPage = totalCount/pageSize;
+        totalPage = totalCount/pageSize;
         if (totalPage == 0 || totalCount%pageSize != 0) {
             totalPage++;
-        }*/
+        }
         return totalPage;
     }
 

@@ -22,29 +22,42 @@
     <link rel="stylesheet" type="text/css" href="/css/portal/search.css">
     <script src="/js/common/jquery-1.8.3.js"></script>
     <script>
-
+        var tid = "";
+        var isHot = "";
+        var isNew = "";
         $(function () {
-            var tid = "";
-            var isHot = "";
-            var isNew = "";
+
             $(".filter p a").click(function () {
                 $(this).siblings().removeClass("current");
                 $(this).addClass("current");
-                var tid1 = $("[ftype='mtype'][class='current']").attr("value");
-                var isHot1 = $("[ftype='isHot'][class='current']").attr("value");
-                var isNew1 = $("[ftype='isNew'][class='current']").attr("value");
-                window.location.href = "/song/list?tid="+tid1+"&isHot="+isHot1+"&isNew="+isNew1;
+                var tid = $("a[ftype='mtype'][class='current']").attr("value");
+                var isHot = $("a[ftype='isHot'][class='current']").attr("value");
+                var isNew = $("a[ftype='isNew'][class='current']").attr("value");
+
+                alert(tid +" "+isHot +" " +isNew)
+                window.location.href = "/song/list?tid="+tid+"&isHot="+isHot+"&isNew="+isNew;
             })
             tid = $("#tid").val();
             isHot = $("#isHot").val();
             isNew = $("#isNew").val();
-            $("[ftype='mtype']").removeClass("current");
-            $("[ftype='isHot']").removeClass("current");
-            $("[ftype='isNew']").removeClass("current");
-            $("[ftype='mtype'][value='" + tid + "']").addClass("current");
-            $("[ftype='isHot'][value='" + isHot + "']").addClass("current");
-            $("[ftype='isNew'][value='" + isNew + "']").addClass("current");
+
+            $("a[ftype='mtype'][class='current']").removeClass("current");
+            $("a[ftype='mtype'][value='" + tid + "']").addClass("current");
+
+            $("a[ftype='isHot'][class='current']").removeClass("current");
+            $("a[ftype='isHot'][value='" + isHot + "']").addClass("current");
+
+            $("a[ftype='isNew'][class='current']").removeClass("current");
+            $("a[ftype='isNew'][value='" + isNew + "']").addClass("current");
         })
+
+        function loadMore() {
+            var totalPage = $("#totalPage").val();
+            var pageNoProtal = parseInt($("#pageNoProtal").val())+1;
+            alert(totalPage)
+            var pageSize = 5*(pageNoProtal);
+            window.location.href = "/song/list?tid="+tid+"&isHot="+isHot+"&isNew="+isNew+"&pageSize="+pageSize+"&pageNoProtal="+pageNoProtal;
+        }
 
     </script>
 </head>
@@ -117,7 +130,7 @@
                         <dt>热门&nbsp;:</dt>
                         <dd>
                             <p>
-                                <a href="#" ftype="isHot" value="0" class="current">全部</a>
+                                <a href="#" ftype="isHot" value="" class="current">全部</a>
                                 <a id="isHota" href="#" ftype="isHot" value="1">热门</a>
                             </p>
                         </dd>
@@ -126,7 +139,7 @@
                         <dt>新歌&nbsp;:</dt>
                         <dd>
                             <p>
-                                <a href="#" ftype="isNew" class="current" value="0">全部</a>
+                                <a href="#" ftype="isNew" class="current" value="">全部</a>
                                 <a id="isNewa" href="#" ftype="isNew" value="1">最新</a>
                             </p>
                         </dd>
@@ -185,10 +198,12 @@
                         </tbody>
                     </table>
                 </div>
-                <c:if test="${result.hasMore}">
-                    <div class="loadr" id="loader" ><a href="javascript:;" onclick="loadMore()"><b></b>查看更多</a></div>
+                <input type="hidden" id="pageNoProtal"  value="${sq.pageNoProtal}"/>
+                <input type="hidden" id="totalPage"  value="${page.totalPage}"/>
+                <c:if test="${page.totalPage > sq.pageNoProtal}">
+                    <div class="loadr" id="loader" ><a href="#" onclick="loadMore()"><b></b>查看更多</a></div>
                 </c:if>
-                <c:if test="${!result.hasMore}">
+                <c:if test="${page.totalPage <= sq.pageNoProtal}">
                     <div class="loadr" id="nomore" style="font-size: 18px;">没有更多啦!</div>
                 </c:if>
             </div>
@@ -203,30 +218,10 @@
                 <a class="albums" href="#"><b></b>专辑<sup>无损</sup></a>
             </div>
             <div class="genre">
-                <a href="#"  ><b></b>流行</a>
-                <a href="#"  ><b></b>摇滚</a>
-                <a href="#"  ><b></b>民谣</a>
-                <a href="#"  ><b></b>电子</a>
-                <a href="#"  ><b></b>节奏布鲁斯</a>
-                <a href="#"  ><b></b>爵士</a>
-                <a href="#"  ><b></b>轻音乐</a>
-                <a href="#"  ><b></b>嘻哈(说唱)</a>
-                <a href="#"  ><b></b>动漫</a>
-                <a href="#"  ><b></b>布鲁斯</a>
-                <a href="#"  ><b></b>金属</a>
-                <a href="#"  ><b></b>朋克</a>
-                <a href="#"  ><b></b>世界音乐</a>
-                <a href="#"  ><b></b>新世纪</a>
-                <a href="#"  ><b></b>舞台 / 银幕 / 娱乐</a>
-                <a href="#"  ><b></b>乡村</a>
-                <a href="#"  ><b></b>雷鬼</a>
-                <a href="#"  ><b></b>古典</a>
-                <a href="#"  ><b></b>唱作人</a>
-                <a href="#"  ><b></b>拉丁</a>
-                <a href="#"  ><b></b>中国特色</a>
-                <a href="#"  ><b></b>实验</a>
-                <a href="#"  ><b></b>儿童</a>
-                <a href="#"  ><b></b>有声书</a>
+                <a href="/song/list"><b></b>全部</a>
+                <c:forEach items="${mtypes}" var="mtype">
+                    <a href="/song/list?tid=${mtype.tid}" value="${mtype.tid}"><b></b>${mtype.tname}</a>
+                </c:forEach>
             </div>
         </div>
     </div>
@@ -296,6 +291,4 @@
     </div>
 </div>
 </body>
-<script type="text/javascript" src="/js/common/jquery-1.8.3.js"></script>
-<script type="text/javascript" src="/js/portal/search.js"></script>
 </html>

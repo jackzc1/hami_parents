@@ -10,6 +10,15 @@ public class SongQuery extends Song {
     private String srname;
     private String aname;
 
+    private Integer pageNoProtal = 1;
+
+    public Integer getPageNoProtal() {
+        return pageNoProtal;
+    }
+
+    public void setPageNoProtal(Integer pageNoProtal) {
+        this.pageNoProtal = pageNoProtal;
+    }
 
     public String getSrname() {
         return srname;
