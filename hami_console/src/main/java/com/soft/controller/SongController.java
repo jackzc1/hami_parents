@@ -84,13 +84,6 @@ public class SongController {
         List<Album> albums = albumService.selectAll();
         List<Songer> songers = songerService.selectAll();
 
-        Mtype mtype = mtypeService.selectByPrimaryKey(song.getTid());
-        Album album = albumService.selectByPrimaryKey(song.getAid());
-        Songer songer = songerService.selectByPrimaryKey(song.getSrid());
-        song.setMtype(mtype);
-        song.setAlbum(album);
-        song.setSonger(songer);
-
         model.addAttribute("song", song);
         model.addAttribute("mtypes", mtypes);
         model.addAttribute("albums", albums);

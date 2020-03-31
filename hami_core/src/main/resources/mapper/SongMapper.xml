@@ -37,7 +37,7 @@
   <sql id="Blob_Column_List">
     LRC
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="songResultMap">
     select 
     <include refid="Base_Column_List" />
     ,
@@ -254,6 +254,12 @@
       <if test="tid != null and tid != ''">
         and s.tid = #{tid}
       </if>
+      <if test="isHot != null and isHot != ''">
+        and s.IS_HOT = #{isHot}
+      </if>
+      <if test="isNew != null and isNew != ''">
+        and s.IS_NEW = #{isNew}
+      </if>
     </where>
     limit #{startNum}, #{pageSize}
   </select>
@@ -274,6 +280,12 @@
       </if>
       <if test="tid != null and tid != ''">
         and s.tid = #{tid}
+      </if>
+      <if test="isHot != null and isHot != ''">
+        and s.IS_HOT = #{isHot}
+      </if>
+      <if test="isNew != null and isNew != ''">
+        and s.IS_NEW = #{isNew}
       </if>
     </where>
   </select>
