@@ -5,4 +5,5 @@ import com.soft.query.SongerQuery;
 
 public interface SongerMapper extends BaseMapper<SongerQuery, Songer>{
 
+    Songer selectByPrimaryKeyOneToMany(Integer srid);
 }

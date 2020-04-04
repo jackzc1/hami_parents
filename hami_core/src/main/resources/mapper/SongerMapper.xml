@@ -154,6 +154,9 @@
       <if test="tid != null">
         and s.tid = #{tid}
       </if>
+      <if test="isHot != null">
+        and s.IS_HOT = #{isHot}
+      </if>
     </where>
     limit #{startNum}, #{pageSize}
   </select>
@@ -170,7 +173,22 @@
       <if test="tid != null">
         and s.tid = #{tid}
       </if>
+      <if test="isHot != null">
+        and s.IS_HOT = #{isHot}
+      </if>
     </where>
+  </select>
+
+  <resultMap id="oneToManyResult" type="com.soft.model.Songer" extends="ResultMapWithBLOBs">
+    <association property="mtype" javaType="com.soft.model.Mtype" resultMap="com.soft.dao.MtypeMapper.BaseResultMap"></association>
+    <collection property="songs" ofType="com.soft.model.Song" resultMap="com.soft.dao.SongMapper.ResultMapWithBLOBs"></collection>
+  </resultMap>
+
+  <select id="selectByPrimaryKeyOneToMany" parameterType="int" resultMap="oneToManyResult">
+    select * from songer sr
+    left join song s on sr.srid = s.srid
+    left join mtype m on sr.tid = m.tid
+    where sr.srid = #{srid}
   </select>
 
 </mapper>

@@ -6,7 +6,15 @@ public class SongerQuery extends Songer {
     private Integer startNum = 0;
     private Integer pageNo;
     private Integer pageSize = 5;
+    private Integer pageNoProtal = 1;
 
+    public Integer getPageNoProtal() {
+        return pageNoProtal;
+    }
+
+    public void setPageNoProtal(Integer pageNoProtal) {
+        this.pageNoProtal = pageNoProtal;
+    }
     @Override
     public String toString() {
         return "SongerQuery{" +

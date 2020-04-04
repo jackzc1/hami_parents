@@ -1,5 +1,7 @@
 package com.soft.model;
 
+import java.util.List;
+
 public class Songer {
     private Integer srid;
 
@@ -14,6 +16,17 @@ public class Songer {
     private Integer isHot;
 
     private String intro;
+
+    //一对多配置
+    private List<Song> songs;
+
+    public List<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
 
     //多对一配置
     private Mtype mtype;

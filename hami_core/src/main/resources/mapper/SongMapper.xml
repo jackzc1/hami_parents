@@ -306,4 +306,55 @@
     LRC = #{lrc,jdbcType=LONGVARCHAR}
     where SID = #{sid,jdbcType=INTEGER}
   </update>
+
+
+
+  <select id="selectByListsIds" parameterType="list"  resultMap="songResultMap">
+    select
+    s.SID,
+    s.TID,
+    s.SRID,
+    s.AID,
+    s.SNAME,
+    s.MP3,
+    s.IS_HOT,
+    s.IS_NEW,
+    s.PTIMES,
+    s.AUDIT_STATUS,
+    s.SHOW_STATUS,
+    m.TNAME,
+    sr.SRNAME,
+    sr.PIC,
+    a.ANAME
+    from song s left join mtype m on s.tid = m.tid
+    LEFT JOIN songer sr on s.srid = sr.srid
+    LEFT JOIN  album a on s.aid = a.aid
+    <where>
+      s.sid in
+      <if test="sids != null">
+        <foreach collection="sids" open="(" close=")" separator="," item="sid">
+          #{sid}
+        </foreach>
+      </if>
+      order by field(s.sid,
+        <foreach collection="sids" separator="," item="sid">
+          #{sid}
+        </foreach>
+      );
+    </where>
+  </select>
+
+
+  <select id="selectBysid1" parameterType="int"  resultMap="songResultMap">
+    select
+    s.*,
+    m.TNAME,
+    sr.SRNAME,
+    sr.PIC,
+    a.ANAME
+    from song s left join mtype m on s.tid = m.tid
+    LEFT JOIN songer sr on s.srid = sr.srid
+    LEFT JOIN  album a on s.aid = a.aid
+    where s.sid = #{sid}
+  </select>
 </mapper>

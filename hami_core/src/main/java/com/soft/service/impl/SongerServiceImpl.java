@@ -17,4 +17,9 @@ public class SongerServiceImpl extends BaseServiceImpl<SongerQuery, Songer> impl
         this.songerMapper = songerMapper;
         this.baseMapper = songerMapper;
     }
+
+    @Override
+    public Songer selectByPrimaryKeyOneToMany(Integer srid) {
+        return songerMapper.selectByPrimaryKeyOneToMany(srid);
+    }
 }

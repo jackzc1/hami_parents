@@ -34,7 +34,6 @@
                 var isHot = $("a[ftype='isHot'][class='current']").attr("value");
                 var isNew = $("a[ftype='isNew'][class='current']").attr("value");
 
-                alert(tid +" "+isHot +" " +isNew)
                 window.location.href = "/song/list?tid="+tid+"&isHot="+isHot+"&isNew="+isNew;
             })
             tid = $("#tid").val();
@@ -54,9 +53,31 @@
         function loadMore() {
             var totalPage = $("#totalPage").val();
             var pageNoProtal = parseInt($("#pageNoProtal").val())+1;
-            alert(totalPage)
             var pageSize = 5*(pageNoProtal);
             window.location.href = "/song/list?tid="+tid+"&isHot="+isHot+"&isNew="+isNew+"&pageSize="+pageSize+"&pageNoProtal="+pageNoProtal;
+        }
+
+        function selectallornot(d) {
+            var ck = $(d).attr("checked");
+            if (ck == "checked") {
+                $("input[name='chartids']").attr("checked", "checked")
+            } else {
+                $("input[name='chartids']").removeAttr("checked")
+            }
+        }
+        
+        function playsongs() {
+            var songs = $("input[name='chartids']:checked");
+            var sids = "";
+            songs.each(function () {
+                var val = $(this).val();
+                sids = sids  + val + ",";
+            })
+            window.open("/song/play?sids="+sids, "play")
+        }
+
+        function play(d) {
+            window.open("/song/play?sids="+d, "play")
         }
 
     </script>
@@ -166,7 +187,7 @@
 
                         <c:forEach items="${page.list}" varStatus="status" var="song">
                             <tr data-index="0">
-                                <td align="right"><input type="checkbox" name="chartids" checked="checked" value="1770112914"></td>
+                                <td align="right"><input type="checkbox" name="chartids" checked="checked" value="${song.sid}"></td>
                                 <td align="center">${status.count}</td>
                                 <td>
                                     <div class="song">
@@ -199,7 +220,6 @@
                     </table>
                 </div>
                 <input type="hidden" id="pageNoProtal"  value="${sq.pageNoProtal}"/>
-                <input type="hidden" id="totalPage"  value="${page.totalPage}"/>
                 <c:if test="${page.totalPage > sq.pageNoProtal}">
                     <div class="loadr" id="loader" ><a href="#" onclick="loadMore()"><b></b>查看更多</a></div>
                 </c:if>
@@ -213,7 +233,7 @@
                 <a class="index" href="#"><b></b>发现</a>
                 <a class="top" href="#"><b></b>排行榜</a>
                 <a class="magazines" href="#"><b></b>音乐人企划</a>
-                <a class="artists" href="#"><b></b>音乐人</a>
+                <a class="artists" href="/songer/list"><b></b>音乐人</a>
                 <a class="songs current" href="#"><b></b>歌曲</a>
                 <a class="albums" href="#"><b></b>专辑<sup>无损</sup></a>
             </div>
